@@ -32,5 +32,8 @@ class User < Sequel::Model
 		"data/#{user_id}.txt"
 	end
 
+	def needs_update?
+		updated_date.nil? || updated_date.age > 5.minutes
+	end
 end
 

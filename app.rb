@@ -49,6 +49,8 @@ helpers do
 		halt code, {'Content-Type' => 'text/plain'}, message
 	end
 
+	def update_user_data
+	end
 
 end
 
@@ -132,3 +134,8 @@ class TwtxtUpdate
 	end
 end
 
+class UserHelper
+	def self.update_user_data
+		
+	end
+end

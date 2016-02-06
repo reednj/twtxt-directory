@@ -4,9 +4,16 @@
 
 <% content_for :body do %>
 
-<div style='margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #839496;'>
+<div class='section'>
 	<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
 	[<%= user.update_count %> updates]
+</div>
+
+<div class='section'>
+	<div class='command'>
+		<div class="command-line"># run this to follow @<%= user.username %> in the app</div>
+		<div class="command-line">twtxt follow <%= user.username %> <%= user.update_url %></div>
+	</div>
 </div>
 
 <% data.each do |update| %>

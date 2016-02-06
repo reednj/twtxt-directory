@@ -7,6 +7,7 @@ body {
 #content {
 	margin: 0 auto;
 	max-width: 800px;
+	padding: 0 1em;
 }
 
 #header {
@@ -56,6 +57,16 @@ td.numeric {
 }
 
 .update .content {
+}
 
+.section {
+	margin-bottom: 8px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #839496;
+}
+
+.command {
+	padding: 8px;
+	background-color: black;
 }
 
