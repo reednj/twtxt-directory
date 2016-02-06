@@ -71,3 +71,24 @@ td.numeric {
 	background-color: black;
 }
 
+input[type=text] {
+	padding: 3px;
+}
+
+input[type=button], 
+input[type=submit] {
+	font-weight: bold;
+	padding: 5px 8px;
+	background-color: #eee8d5;
+	border: none;
+	outline: none;
+}
+
+input[type=button]:active, 
+input[type=submit]:active {
+	background-color: #93a1a1;
+}
+
+input#user-username {
+	width: 150px;
+}
