@@ -122,6 +122,10 @@ class TwtxtUpdate
 		begin
 			self.date = Time.parse(fields[0])
 			self.text = fields[1]
+
+			if self.date > 1.day.from_now
+				raise 'update is in the future'
+			end
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
