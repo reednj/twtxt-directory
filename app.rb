@@ -15,11 +15,7 @@ require './lib/sinatra-schema-backup'
 
 use Rack::Deflater
 set :erb, :escape_html => true
-set :version, 'v:dev'
-
-if File.exist? 'version.txt'
-	set :version, File.read('version.txt').strip
-end
+set :version, GitVersion.current('/home/reednj/code/twtxt.git')
 
 configure :development do
 	also_reload './lib/model.rb'
