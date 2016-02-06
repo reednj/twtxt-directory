@@ -197,16 +197,12 @@ class UserHelper
 
 	def self._check_update_headers!(headers)
 		content_type = headers[:content_type]
-		content_length = headers[:content_length]
 
 		if !content_type.nil?
 			if !content_type.include?('text/plain') && !content_type.include?('text/html')
 				raise 'text/plain or text/html file required'
 			end
 		end
-
-		raise 'content-length header required' if content_length.nil?
-		raise 'max update size is 1mb' if content_length.to_i > 1024 * 1024
 	end
 
 
