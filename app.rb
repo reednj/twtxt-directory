@@ -53,9 +53,20 @@ end
 
 get '/' do
 	erb :home, :layout => :_layout, :locals => {
-		:users => User.all
+		:users => User.order_by(:username).take(500)
 	}
 end
 
+get '/add' do
+	# later this will add all the users, but for now just add the default set
 
+	User.for('benaiah', 'http://benaiah.me/twtxt.txt').save
+	User.for('buckket', 'http://buckket.org/twtxt.txt').save
+	User.for('erlehmann', 'http://daten.dieweltistgarnichtso.net/tmp/docs/twtxt.txt').save
+	User.for('parteigaenger', 'http://vigintitres.eu/twtxt.txt').save
+	User.for('plom', 'http://test.plomlompom.com/twtxt/plom.txt').save
+	User.for('zrolaps', 'http://test.plomlompom.com/twtxt/zrolaps.txt').save
+	
+	'ok'
+end
 

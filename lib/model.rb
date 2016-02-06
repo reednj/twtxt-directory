@@ -16,7 +16,19 @@ class User < Sequel::Model
 		def exist?(id)
 			!self[id].nil?
 		end
+
+		def for(username, url)
+			user = User.new
+			user.user_id = url.sha1
+			user.username = username
+			user.update_url = url
+			user.update_count = 0
+			return user
+		end
+
 	end
+
+
 
 end
 
