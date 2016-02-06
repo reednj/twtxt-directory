@@ -5,8 +5,8 @@
 <% content_for :body do %>
 
 <div class="section">
-	<form onsubmit="return false;">
-		<input id='user-username' name='username' type="text" placeholder='username' />
+	<form action='/user/add' method='post'>
+		@<input id='user-username' name='username' type="text" placeholder='username' />
 		<input id='user-url' name='url' type="text"  placeholder='url' />
 		<input type="submit" value='Add User' />
 	</form>

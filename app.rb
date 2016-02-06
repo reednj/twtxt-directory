@@ -49,6 +49,11 @@ helpers do
 		halt code, {'Content-Type' => 'text/plain'}, message
 	end
 
+	def valid_username?(username)
+		return false if username.length > 64
+		return username =~ /^[a-zA-Z_\-0-9]+$/
+	end
+
 end
 
 get '/' do
@@ -57,25 +62,43 @@ get '/' do
 	}
 end
 
+post '/user/add' do 
+	username = params[:username]
+	url = params[:url]
+
+	username.strip!
+	url.strip!
+
+	# validate the username + url
+	halt_with_text 500, 'invalid username' if !valid_username?(username)
+	halt_with_text 500, 'url required' if url.nil? || url.empty?
+
+	# get the url to make sure it exists and is valid
+	user = User.for username, url
+	
+	begin
+		data = UserHelper.update_user_data(user)
+		UserHelper.update_user_record(user, data)
+	rescue => e
+		halt_with_text 500, "could not load updates from that url (#{e.message})"
+	end
+
+	json user
+end
+
 get '/user/:user_id' do |user_id|
 	user = User[user_id]
 	halt_with_text 404, 'user not found' if user.nil?
 	halt_with_text 404, 'no data for that user' if !user.data_exist?
 
 	if user.needs_update?
-		background_task do 
-			# is it safe to spawn another thread with the same user object?
+		background_task do
+			# is it safe to spawn another thread using the same user object?
 			# I have no idea...
 			#
-			# update the updated_date straight away so this doesn't keep getting
-			# triggered. Still could get into a race condition here, but going to
-			# live with it
-			user.updated_date = Time.now
-			user.save_changes
-
-			UserHelper.update_user_data(user)
-			user.update_count = updates.length
-			user.save_changes
+			# the update user call with get the data, update the file on disk
+			# and update the date and count for the user record in the db
+			UserHelper.update_user(user)
 		end
 	end
 
@@ -123,8 +146,26 @@ class TwtxtUpdate
 end
 
 class UserHelper
+	def self.update_user_record(user, data)
+		updates = UserHelper.updates_from_data(data)
+		user.update_count = updates.length
+		user.updated_date = Time.now
+		user.save_changes
+	end
+
+	def self.update_user(user)
+		# update the updated_date straight away so this doesn't keep getting
+		# triggered. Still could get into a race condition here, but going to
+		# live with it
+		user.updated_date = Time.now
+		user.save_changes
+
+		data = update_user_data(user)
+		update_user_record(user, data)
+	end
+
 	def self.update_user_data(user)
-		data = RestClient.get user.update_urls
+		data = RestClient.get user.update_url
 		File.write user.data_path, data
 		return data
 	end

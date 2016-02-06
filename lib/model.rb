@@ -19,13 +19,16 @@ class User < Sequel::Model
 
 		def for(username, url)
 			user = User.new
-			user.user_id = url.sha1
+			user.user_id = id_for_url(url)
 			user.username = username
 			user.update_url = url
 			user.update_count = 0
 			return user
 		end
 
+		def id_for_url(url)
+			url.sha1
+		end
 	end
 
 	def data_path
