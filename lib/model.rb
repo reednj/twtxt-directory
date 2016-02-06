@@ -17,6 +17,11 @@ class User < Sequel::Model
 			!self[id].nil?
 		end
 
+		def get_by_url(url)
+			id = id_for_url(url)
+			User[id]
+		end
+		
 		def for(username, url)
 			user = User.new
 			user.user_id = id_for_url(url)

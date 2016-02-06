@@ -73,9 +73,14 @@ post '/user/add' do
 	halt_with_text 500, 'invalid username' if !valid_username?(username)
 	halt_with_text 500, 'url required' if url.nil? || url.empty?
 
+	# maybe we already have a user for that url? this will fail with a PK error
+	# anyway, but if we catch it here, we can give a nicer message
+	user = User.get_by_url(url)
+	halt_with_text 500, "user @#{user.username} already exists for that url" if !user.nil?
+
 	# get the url to make sure it exists and is valid
 	user = User.for username, url
-	
+
 	begin
 		data = UserHelper.update_user_data(user)
 		UserHelper.update_user_record(user, data)
