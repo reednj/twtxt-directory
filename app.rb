@@ -76,7 +76,7 @@ post '/user/add' do
 	# maybe we already have a user for that url? this will fail with a PK error
 	# anyway, but if we catch it here, we can give a nicer message
 	user = User.get_by_url(url)
-	halt_with_text 500, "user @#{user.username} already exists for that url" if !user.nil?
+	halt_with_text 500, "a user @#{user.username} already exists for that url" if !user.nil?
 
 	# get the url to make sure it exists and is valid
 	user = User.for username, url
@@ -175,10 +175,35 @@ class UserHelper
 	end
 
 	def self.update_user_data(user)
-		data = RestClient.get user.update_url
+		response = RestClient.head(user.update_url)
+		_check_update_headers! response.headers
+
+		# if no exception was raised when checking the headers we
+		# can continue getting the data
+		data = RestClient::Request.execute({
+			:method => :get, 
+			:url => user.update_url, 
+			:timeout => 20
+		})
+
 		File.write user.data_path, data
 		return data
 	end
+
+	def self._check_update_headers!(headers)
+		content_type = headers[:content_type]
+		content_length = headers[:content_length]
+
+		if !content_type.nil?
+			if !content_type.include?('text/plain') && !content_type.include?('text/html')
+				raise 'text/plain or text/html file required'
+			end
+		end
+
+		raise 'content-length header required' if content_length.nil?
+		raise 'max update size is 1mb' if content_length.to_i > 1024 * 1024
+	end
+
 
 	def self.updates_from_data(data)
 		lines = data.split("\n").reverse
