@@ -7,8 +7,11 @@
 	<tbody>
 	<% users.each do |user| %>
 		<tr>
-			<td>@<%= user.username %></td>
-			<td><%= user.update_url %></td>
+			<td>
+				<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
+			</td>
+
+			<td><a href='<%= user.update_url %>'><%= user.update_url %></a></td>
 			<td class='numeric'>[<%= user.update_count %> updates]</td>
 		</tr>
 	<% end %>

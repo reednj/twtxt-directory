@@ -1,7 +1,7 @@
 body {
 	background-color: #002b36;
 	color: #839496;
-	font-family: monaco, courier new
+	font-family: courier new
 }
 
 #content {
@@ -12,13 +12,28 @@ body {
 em {
 	font-weight: bold;
 	font-style: normal;
+}
+
+a {
 	color: #93A1A1;
 }
 
+a:active {
+	color: #268bd2 !important;
+}
+
+a.user-link {
+	color: #2aa198;
+	font-style: bold;
+}
 
 table.console-table {
 	width: 100%;
 	border-collapse: collapse;
+}
+
+table.console-table td {
+	padding: 4px 6px;
 }
 
 td.numeric {
