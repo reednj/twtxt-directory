@@ -13,3 +13,4 @@ mkdir $WEB/tmp
 touch $WEB/tmp/restart.txt
 
 echo "Website deployed"
+
