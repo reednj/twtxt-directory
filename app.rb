@@ -208,8 +208,9 @@ class UserHelper
 			end
 		end
 
-		raise 'content-length header required' if content_length.nil?
-		raise 'max update size is 1mb' if content_length.to_i > 1024 * 1024
+		if !content_length.nil?
+			raise 'max update size is 1mb' if content_length.to_i > 1024 * 1024
+		end
 	end
 
 
