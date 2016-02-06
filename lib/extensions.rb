@@ -12,7 +12,7 @@ class Time
 	def diff_in_words(t=nil)
 		t ||= Time.now
 		result = (t - self).abs.time_in_words
-		return t > self ? result + ' ago' : result + ' to go'
+		return t > self ? result + ' ago' : result + ' from now'
 	end
 
 	def age

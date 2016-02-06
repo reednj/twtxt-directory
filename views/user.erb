@@ -18,7 +18,7 @@
 
 <% data.each do |update| %>
 	<div class='update'>
-		<div class='header' title='<%= update.date %>'>[<%= update.date.age_in_words %> ago]</div>
+		<div class='header' title='<%= update.date %>'>[<%= update.date.diff_in_words %>]</div>
 		<div class='content'><%= update.text.truncate(140) %></div>
 	</div>
 <% end %>
