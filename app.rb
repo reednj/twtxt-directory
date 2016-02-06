@@ -88,7 +88,12 @@ post '/user/add' do
 		halt_with_text 500, "could not load updates from that url (#{e.message})"
 	end
 
-	json user
+	if request.xhr?
+		json user 
+	else
+		redirect to("/user/#{user.user_id}")
+	end
+
 end
 
 get '/user/:user_id' do |user_id|
