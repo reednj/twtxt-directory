@@ -1,8 +1,8 @@
 #!/bin/sh
 
-WEB=~/test.reednj.com
-SRC=~/code/test.git
-CONFIG=~/code/config_backup/test
+WEB=~/twtxt.reednj.com
+SRC=~/code/twtxt.git
+CONFIG=~/code/config_backup/twtxt
 
 # copy the required files to the website
 rm -rf $WEB/*
