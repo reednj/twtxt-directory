@@ -3,20 +3,30 @@
 
 <div id="content">
 
-<table class='console-table'>
-	<tbody>
-	<% users.each do |user| %>
-		<tr>
-			<td>
-				<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
-			</td>
+	<div id='header'>
+		<span>
+			<a href='https://github.com/buckket/twtxt'>twtxt</a> user directory | 
+			<%= settings.version %>
+		<span>
+		<span style='float: right;'>
+			<a href='http://twitter.com/reednj'>@reednj</a>
+		</span>
+	</div>
 
-			<td><a href='<%= user.update_url %>'><%= user.update_url %></a></td>
-			<td class='numeric'>[<%= user.update_count %> updates]</td>
-		</tr>
-	<% end %>
-	</tbody>
-</table>
+	<table class='console-table'>
+		<tbody>
+		<% users.each do |user| %>
+			<tr>
+				<td>
+					<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
+				</td>
+
+				<td><a href='<%= user.update_url %>'><%= user.update_url.truncate(40) %></a></td>
+				<td class='numeric'>[<%= user.update_count %> updates]</td>
+			</tr>
+		<% end %>
+		</tbody>
+	</table>
 	
 
 
