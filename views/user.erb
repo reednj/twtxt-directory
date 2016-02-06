@@ -5,7 +5,7 @@
 <% content_for :body do %>
 
 <div class='section'>
-	<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
+	<a class='user-link' href='<%= user.profile_url %>'>@<%= user.username %></a>
 	[<%= user.update_count %> updates]
 </div>
 

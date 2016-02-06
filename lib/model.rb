@@ -17,6 +17,13 @@ class User < Sequel::Model
 			!self[id].nil?
 		end
 
+		def get_by_id(partial_id)
+			users = User.where(Sequel.like(:user_id, partial_id + '%')).take(100)
+			raise 'more than one user with that key' if users.count > 1
+			return nil if users.empty?
+			return users[0]
+		end
+
 		def get_by_url(url)
 			id = id_for_url(url)
 			User[id]
@@ -48,6 +55,10 @@ class User < Sequel::Model
 	# tell us if it exists
 	def data_exist?
 		File.exist? self.data_path
+	end
+
+	def profile_url
+		"/user/#{user_id[0...16]}"
 	end
 end
 
