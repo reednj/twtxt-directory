@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` varchar(64) NOT NULL,
   `username` varchar(64) NOT NULL,
+  `update_url` varchar(512) NOT NULL,
   `update_count` int(11) NOT NULL,
   `updated_date` timestamp NULL DEFAULT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP

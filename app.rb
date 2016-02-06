@@ -52,7 +52,9 @@ helpers do
 end
 
 get '/' do
-	erb :home, :layout => :_layout
+	erb :home, :layout => :_layout, :locals => {
+		:users => User.all
+	}
 end
 
 

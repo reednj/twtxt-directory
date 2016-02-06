@@ -1,0 +1,26 @@
+body {
+	background-color: #002b36;
+	color: #839496;
+	font-family: monaco, courier new
+}
+
+#content {
+	margin: 0 auto;
+	max-width: 600px;
+}
+
+em {
+	font-weight: bold;
+	font-style: normal;
+	color: #93A1A1;
+}
+
+
+table.console-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+td.numeric {
+	text-align: right;
+}
