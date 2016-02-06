@@ -24,7 +24,21 @@
 
 <body>
 
-<%== yield_content :body %>
+<div id="content">
+
+	<div id='header'>
+		<span>
+			<a href='https://github.com/buckket/twtxt'>twtxt</a> <a href='/'>user directory</a> | 
+			<%= settings.version %>
+		<span>
+		<span style='float: right;'>
+			<a href='http://twitter.com/reednj'>@reednj</a>
+		</span>
+	</div>
+	
+	<%== yield_content :body %>
+
+</div>
 
 </body>
 </html>

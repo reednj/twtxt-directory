@@ -5,6 +5,7 @@ require 'sinatra/json'
 
 require 'json'
 require 'erubis'
+require 'rest-client'
 
 require "sinatra/reloader" if development?
 
@@ -54,6 +55,15 @@ end
 get '/' do
 	erb :home, :layout => :_layout, :locals => {
 		:users => User.order_by(:username).take(500)
+	}
+end
+
+get '/user/:user_id' do |user_id|
+	user = User[user_id]
+	halt_with_text 404, 'user not found' if user.nil?
+
+	erb :user, :layout => :_layout, :locals => {
+		:user => user
 	}
 end
 
