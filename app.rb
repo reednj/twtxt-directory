@@ -103,9 +103,9 @@ end
 get '/user/:user_id' do |user_id|
 	user = User[user_id]
 	halt_with_text 404, 'user not found' if user.nil?
-	#halt_with_text 404, 'no data for that user' if !user.data_exist?
+	halt_with_text 404, 'no data for that user' if !user.data_exist?
 
-	if !user.data_exist? || user.needs_update?
+	if user.needs_update?
 		background_task do
 			# is it safe to spawn another thread using the same user object?
 			# I have no idea...
