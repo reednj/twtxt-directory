@@ -1,6 +1,16 @@
 
 <% content_for :body do %>
 
+<div style='margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #839496;'>
+	<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
+	[<%= user.update_count %> updates]
+</div>
 
+<% data.each do |update| %>
+	<div class='update'>
+		<div class='header' title='<%= update.date %>'>[<%= update.date.age_in_words %> ago]</div>
+		<div class='content'><%= update.text %></div>
+	</div>
+<% end %>
 	
 <% end %>

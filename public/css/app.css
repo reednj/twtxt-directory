@@ -45,3 +45,17 @@ table.console-table td {
 td.numeric {
 	text-align: right;
 }
+
+.update {
+	margin-bottom: 8px;
+}
+
+.update .header {
+	color: #586e75;
+	margin-bottom: 4px;
+}
+
+.update .content {
+
+}
+

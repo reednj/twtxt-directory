@@ -62,8 +62,30 @@ get '/user/:user_id' do |user_id|
 	user = User[user_id]
 	halt_with_text 404, 'user not found' if user.nil?
 
+	
+
+	if File.exist? user.data_path
+		data = File.read user.data_path
+		was_updated = false
+	else
+		data = RestClient.get user.update_url
+		File.write user.data_path, data
+		was_updated = true
+	end
+
+
+	lines = data.split("\n").reverse
+	updates = lines.map { |d| TwtxtUpdate.new d }
+
+	if was_updated
+		user.updated_date = Time.now
+		user.update_count = updates.length
+		user.save_changes
+	end
+
 	erb :user, :layout => :_layout, :locals => {
-		:user => user
+		:user => user,
+		:data => updates
 	}
 end
 
@@ -78,5 +100,18 @@ get '/add' do
 	User.for('zrolaps', 'http://test.plomlompom.com/twtxt/zrolaps.txt').save
 	
 	'ok'
+end
+
+class TwtxtUpdate
+	attr_accessor :date
+	attr_accessor :text
+
+	def initialize(line)
+		fields = line.split("\t")
+		raise 'update should have only two fields' if fields.count != 2
+
+		self.date = Time.parse(fields[0])
+		self.text = fields[1]
+	end
 end
 

@@ -28,6 +28,9 @@ class User < Sequel::Model
 
 	end
 
+	def data_path
+		"data/#{user_id}.txt"
+	end
 
 end
 
