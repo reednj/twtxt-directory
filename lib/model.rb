@@ -33,7 +33,13 @@ class User < Sequel::Model
 	end
 
 	def needs_update?
-		updated_date.nil? || updated_date.age > 5.minutes
+		self.updated_date.nil? || self.updated_date.age > 5.minutes
+	end
+
+	# the actual content of the updates are stored in a file, this will
+	# tell us if it exists
+	def data_exist?
+		File.exist? self.data_path
 	end
 end
 

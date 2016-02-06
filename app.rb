@@ -49,9 +49,6 @@ helpers do
 		halt code, {'Content-Type' => 'text/plain'}, message
 	end
 
-	def update_user_data
-	end
-
 end
 
 get '/' do
@@ -63,36 +60,27 @@ end
 get '/user/:user_id' do |user_id|
 	user = User[user_id]
 	halt_with_text 404, 'user not found' if user.nil?
+	halt_with_text 404, 'no data for that user' if !user.data_exist?
 
-	
+	if user.needs_update?
+		background_task do 
+			# is it safe to spawn another thread with the same user object?
+			# I have no idea...
+			#
+			# update the updated_date straight away so this doesn't keep getting
+			# triggered. Still could get into a race condition here, but going to
+			# live with it
+			user.updated_date = Time.now
+			user.save_changes
 
-	if File.exist? user.data_path
-		data = File.read user.data_path
-		was_updated = false
-	else
-		data = RestClient.get user.update_url
-		File.write user.data_path, data
-		was_updated = true
-	end
-
-
-	lines = data.split("\n").reverse
-	
-	updates = lines.map do |d| 
-		begin
-			TwtxtUpdate.new d 
-		rescue
-			nil
+			UserHelper.update_user_data(user)
+			user.update_count = updates.length
+			user.save_changes
 		end
 	end
 
-	updates = updates.compact
-
-	if was_updated
-		user.updated_date = Time.now
-		user.update_count = updates.length
-		user.save_changes
-	end
+	data = File.read user.data_path
+	updates = UserHelper.updates_from_data(data)
 
 	erb :user, :layout => :_layout, :locals => {
 		:user => user,
@@ -135,7 +123,23 @@ class TwtxtUpdate
 end
 
 class UserHelper
-	def self.update_user_data
-		
+	def self.update_user_data(user)
+		data = RestClient.get user.update_urls
+		File.write user.data_path, data
+		return data
+	end
+
+	def self.updates_from_data(data)
+		lines = data.split("\n").reverse
+	
+		updates = lines.map do |d| 
+			begin
+				TwtxtUpdate.new d 
+			rescue
+				nil
+			end
+		end
+
+		updates.compact
 	end
 end
