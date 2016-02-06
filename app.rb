@@ -75,7 +75,16 @@ get '/user/:user_id' do |user_id|
 
 
 	lines = data.split("\n").reverse
-	updates = lines.map { |d| TwtxtUpdate.new d }
+	
+	updates = lines.map do |d| 
+		begin
+			TwtxtUpdate.new d 
+		rescue
+			nil
+		end
+	end
+
+	updates = updates.compact
 
 	if was_updated
 		user.updated_date = Time.now
@@ -110,8 +119,12 @@ class TwtxtUpdate
 		fields = line.split("\t")
 		raise 'update should have only two fields' if fields.count != 2
 
-		self.date = Time.parse(fields[0])
-		self.text = fields[1]
+		begin
+			self.date = Time.parse(fields[0])
+			self.text = fields[1]
+		rescue => e
+			raise "could not parse update (#{e.message})"
+		end
 	end
 end
 
