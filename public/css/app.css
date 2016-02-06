@@ -92,3 +92,16 @@ input[type=submit]:active {
 input#user-username {
 	width: 150px;
 }
+
+
+.error-message {
+	color: #dc322f;
+}
+
+.error-message.ok {
+	color: #859900
+}
+
+#user-add-error {
+	padding: 8px;
+}
