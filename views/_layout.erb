@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name='viewport' content='width=device-width' />
+
+	<title><%= yield_content :title %></title>
+
+	<script type='text/javascript' src='/js/jquery-2.1.4.min.js'></script>
+
+
+	<% if defined? _js %>
+	<script type='text/javascript'>
+		_js = <%== _js.to_json %>;
+	</script>
+	<% end %>
+
+	<%== yield_content :header %>
+
+</head>
+
+<body>
+
+<%== yield_content :body %>
+
+</body>
+</html>
