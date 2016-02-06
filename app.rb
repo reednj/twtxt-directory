@@ -193,7 +193,7 @@ class UserHelper
 
 
 	def self.updates_from_data(data)
-		lines = data.split("\n").reverse
+		lines = data.split("\n")
 	
 		updates = lines.map do |d| 
 			begin
@@ -203,6 +203,6 @@ class UserHelper
 			end
 		end
 
-		updates.compact
+		updates.compact.sort_by { |u| u.date }.reverse
 	end
 end
