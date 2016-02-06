@@ -42,7 +42,7 @@
 
 <% content_for :body do %>
 
-<div class="section">
+<div class="section wide-only">
 	<form id='form-add-user' action='/user/add' method='post' onsubmit='Ui.add_user();return false;'>
 		@<input id='user-username' name='username' type="text" placeholder='username' />
 		<input id='user-url' name='url' type="text"  placeholder='url' />
@@ -61,7 +61,7 @@
 				<a class='user-link' href='/user/<%= user.user_id %>'>@<%= user.username %></a>
 			</td>
 
-			<td><a href='<%= user.update_url %>'><%= user.update_url.truncate(40) %></a></td>
+			<td><a class='wide-only' href='<%= user.update_url %>'><%= user.update_url.truncate(40) %></a></td>
 			<td class='numeric'>[<%= user.update_count %> updates]</td>
 		</tr>
 	<% end %>
