@@ -22,10 +22,14 @@
 
 			$.post(url, data).done(function(response) {
 				var result = 'user <a href="/user/' + response.user_id + '">@' + response.username + '</a> added!'
-				$('#user-add-error').addClass('ok').html(result);
+				$('#user-add-error').show().addClass('ok').html(result);
 				Ui.activate_button(button);
 			}).fail(function(xhr) {
-				$('#user-add-error').removeClass('ok').html('could not add user: ' + xhr.responseText);
+				$('#user-add-error')
+					.show()
+					.removeClass('ok')
+					.html('could not add user: ' + xhr.responseText);
+
 				Ui.activate_button(button);
 			});
 		},
@@ -49,7 +53,7 @@
 		<input type="submit" value='Add User' />
 	</form>
 
-	<div id='user-add-error' class='error-message'>
+	<div id='user-add-error' class='error-message' style='display:none'>
 	</div>
 </div>
 
