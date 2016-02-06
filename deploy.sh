@@ -1,6 +1,6 @@
 #!/bin/sh
 
-WEB=~/twtxt.reednj.com
+WEB=~/www/twtxt.reednj.com
 SRC=~/code/twtxt.git
 CONFIG=~/code/config_backup/twtxt
 
