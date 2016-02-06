@@ -46,8 +46,11 @@ helpers do
 		if !options[:timeout].nil?
 			Thread.new do
 				sleep options[:timeout].to_f
-				worker.kill if worker.status != false
-				File.append 'error.log', "background_task thread timeout\n"
+				
+				if worker.status != false
+					worker.kill 
+					File.append 'error.log', "background_task thread timeout\n"
+				end
 			end
 		end
 
