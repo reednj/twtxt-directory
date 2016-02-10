@@ -136,6 +136,10 @@ class String
 	def fix_encoding
 		encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
 	end
+
+	def escape_html
+		Rack::Utils.escape_html self
+	end
 end
 
 class Array

@@ -19,7 +19,7 @@
 <% data.each do |update| %>
 	<div class='update'>
 		<div class='header' title='<%= update.date %>'>[<%= update.date.diff_in_words %>]</div>
-		<div class='content'><%= update.text.truncate(140) %></div>
+		<div class='content'><%== update.html %></div>
 	</div>
 <% end %>
 	
