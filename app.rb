@@ -87,7 +87,10 @@ get '/recent' do
 end
 
 get '/timeline/all' do
+	total_count = Post.count
+
 	erb :timeline, :layout => :_layout, :locals => {
+		:post_count => total_count,
 		:posts => Post.eager(:user).reverse_order(:post_date).take(256).select{|p| !p.user.nil? }
 	}
 end
