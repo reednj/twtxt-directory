@@ -123,6 +123,12 @@ post '/user/add' do
 
 end
 
+get '/user/at/:username' do |username|
+	user = User.where(:username => username).first
+	halt_with_text 404, 'user not found' if user.nil?
+	redirect to(user.profile_url)
+end
+
 get '/user/:user_id' do |user_id|
 	begin
 		user = User.get_by_id user_id
