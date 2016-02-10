@@ -28,6 +28,8 @@ class TwtxtUpdate
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
+
+		return update
 	end
 
 	def to_s
