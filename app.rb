@@ -18,6 +18,7 @@ set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
 
 configure :development do
+	also_reload './lib/twtxt.rb'
 	also_reload './lib/model.rb'
 	also_reload './lib/extensions.rb'
 end
