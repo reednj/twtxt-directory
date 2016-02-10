@@ -82,7 +82,7 @@ end
 
 get '/recent' do
 	erb :recent, :layout => :_layout, :locals => {
-		:users => User.reverse_order(:last_post_date).take(500)
+		:users => User.where('last_post_date is not null').reverse_order(:last_post_date).take(500)
 	}
 end
 
