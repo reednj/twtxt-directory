@@ -19,7 +19,7 @@ class TwtxtUpdate
 		raise 'update should have only two fields' if fields.count != 2
 
 		begin
-			update.date = Time.parse(fields[0])
+			update.date = Time.parse(fields[0]).localtime
 			update.text = fields[1]
 
 			if update.date > 1.day.from_now
@@ -52,6 +52,7 @@ class UpdateHelper
 		update.text = text
 		update.save_to path
 	end
+
 end
 
 class UserHelper
@@ -61,6 +62,7 @@ class UserHelper
 
 		user.update_count = updates.length
 		user.updated_date = Time.now
+		user.last_post_date = updates.map { |u| u.date }.max
 		user.save_changes
 
 		if new_update_count > 0 && user.username != 'directory'
