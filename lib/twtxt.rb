@@ -24,7 +24,7 @@ class TwtxtUpdate
 			update.date = Time.parse(fields[0]).localtime
 			raise 'update is in the future' if update.date > 1.day.from_now
 			
-			update.text = fields[1].encode('utf-8')		
+			update.text = fields[1].force_encoding('utf-8')		
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
@@ -179,7 +179,8 @@ class UserHelper
 		updates = lines.map do |d| 
 			begin
 				TwtxtUpdate.from_s d 
-			rescue
+			rescue => e
+				puts e.message
 				nil
 			end
 		end
