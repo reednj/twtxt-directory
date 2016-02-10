@@ -138,7 +138,11 @@ class String
 	end
 
 	def escape_html
-		Rack::Utils.escape_html self
+		CGI.escapeHTML self
+	end
+
+	def unescape_html
+		CGI.unescapeHTML self
 	end
 end
 

@@ -1,4 +1,5 @@
 require 'uri'
+require 'cgi'
 require 'rest-client'
 
 #
@@ -8,7 +9,6 @@ require 'rest-client'
 class TwtxtUpdate
 	attr_accessor :date
 	attr_accessor :text
-	attr_accessor :urls
 
 	def initialize()
 		@max_len = 140
@@ -24,11 +24,7 @@ class TwtxtUpdate
 			update.date = Time.parse(fields[0]).localtime
 			raise 'update is in the future' if update.date > 1.day.from_now
 			
-			update.text = fields[1]
-
-			# we also want to extract all the urls from the text - this is so we can replace them
-			# with links
-			update.urls = URI::extract(update.text).select {|u| u.start_with? 'http' }
+			update.text = fields[1]			
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
@@ -42,6 +38,19 @@ class TwtxtUpdate
 
 	def html
 		h = self.text.truncate(@max_len).escape_html
+		urls = URI::extract(self.text).select {|u| u.start_with? 'http' }
+
+		# find the user links. Remove those from the urls collection
+		user_link = /( |^)@&lt;([a-z0-9_]+)? (http.+?)&gt;( |$)/i
+
+		while h =~ user_link
+			match = h.match(user_link)
+			name = match.captures[1]
+			url = match.captures[2].unescape_html
+
+			h.sub! user_link, " <a class='auto-link' title='#{url}' href='#{User.id_for_url(url)[0..16]}'>@#{name}</a> "
+			urls.delete url
+		end
 
 		# make all the urls in the text clickable
 		urls.each do |url|
