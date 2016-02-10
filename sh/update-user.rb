@@ -7,8 +7,6 @@ require_relative '../lib/extensions'
 
 class App
 	def main
-		#puts Time.now.iso8601
-
 		# get the oldest updated user, and update them
 		user = self.user_to_update
 

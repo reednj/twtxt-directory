@@ -9,20 +9,46 @@ class TwtxtUpdate
 	attr_accessor :date
 	attr_accessor :text
 
-	def initialize(line)
+	def initialize()
+		self.date = Time.now
+	end
+
+	def self.from_s(line)
+		update = self.new
 		fields = line.split("\t")
 		raise 'update should have only two fields' if fields.count != 2
 
 		begin
-			self.date = Time.parse(fields[0])
-			self.text = fields[1]
+			update.date = Time.parse(fields[0])
+			update.text = fields[1]
 
-			if self.date > 1.day.from_now
+			if update.date > 1.day.from_now
 				raise 'update is in the future'
 			end
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
+	end
+
+	def to_s
+		"#{self.date.utc.iso8601}\t#{self.text}"
+	end
+
+	# appends the update to the given path
+	def save_to(path)
+		File.append path, "#{self}\n"
+	end
+end
+
+class UpdateHelper
+	# adds an update for the directory user
+	def self.add_update(text, username = 'directory')
+		dir = File.dirname(__FILE__)
+		path = File.join dir, "../public/twtxt/#{username}.twtxt.txt"
+
+		update = TwtxtUpdate.new
+		update.text = text
+		update.save_to path
 	end
 end
 
@@ -76,13 +102,12 @@ class UserHelper
 		end
 	end
 
-
 	def self.updates_from_data(data)
 		lines = data.split("\n")
 	
 		updates = lines.map do |d| 
 			begin
-				TwtxtUpdate.new d 
+				TwtxtUpdate.from_s d 
 			rescue
 				nil
 			end
