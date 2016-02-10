@@ -44,7 +44,8 @@ class User < Sequel::Model
 	end
 
 	def data_path
-		"data/#{user_id}.txt"
+		dir = File.dirname(__FILE__)
+		File.join dir, "../data/#{user_id}.txt"
 	end
 
 	def needs_update?
