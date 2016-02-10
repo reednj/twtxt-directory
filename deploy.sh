@@ -8,6 +8,9 @@ CONFIG=~/code/config_backup/twtxt
 mkdir $SRC/data
 cp $WEB/data/* $SRC/data
 
+# update the data
+cp $WEB/public/twtxt/*.txt $SRC/public/twtxt
+
 # copy the required files to the website
 rm -rf $WEB/*
 cp -R $SRC/* $WEB
