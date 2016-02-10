@@ -72,8 +72,8 @@ class Post < Sequel::Model
 			!self[id].nil?
 		end
 
-		def from_update(update, user)
-			user_id = (user.is_a? String)? user : user.user_id
+		def from_update(update, u)
+			user_id = (u.is_a? String)? u : u.user_id
 
 			post = Post.new
 			post.user_id = user_id
@@ -90,7 +90,6 @@ class Post < Sequel::Model
 		def generate_short_id
 			generate_id[0..16]
 		end
-
 
 	end
 

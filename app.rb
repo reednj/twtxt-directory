@@ -17,10 +17,18 @@ use Rack::Deflater
 set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
 
+# when this is true, all sql queries will be dumped to the console, making
+# it easier to debug exactly what the models are doing
+set :log_sql, true
+
 configure :development do
 	also_reload './lib/twtxt.rb'
 	also_reload './lib/model.rb'
 	also_reload './lib/extensions.rb'
+
+	if settings.log_sql
+		DB.logger =  Logger.new(STDOUT)
+	end
 end
 
 configure :production do
@@ -91,7 +99,7 @@ get '/timeline/all' do
 
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => total_count,
-		:posts => Post.eager(:user).reverse_order(:post_date).take(256).select{|p| !p.user.nil? }
+		:posts => Post.eager(:user).reverse_order(:post_date).limit(256).all.select{|p| !p.user.nil? }
 	}
 end
 
