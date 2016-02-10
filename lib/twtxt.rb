@@ -24,7 +24,7 @@ class TwtxtUpdate
 			update.date = Time.parse(fields[0]).localtime
 			raise 'update is in the future' if update.date > 1.day.from_now
 			
-			update.text = fields[1]			
+			update.text = fields[1].encode('utf-8')		
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
@@ -118,7 +118,7 @@ class UserHelper
 				h = {
 					:post_id => id, 
 					:user_id => user.user_id, 
-					:post_date => u.date, 
+					:post_date => u.date,
 					:post_text => u.text
 				}
 			end
