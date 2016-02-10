@@ -103,6 +103,22 @@ get '/timeline/all' do
 	}
 end
 
+get '/user/:username/mentions' do |username|
+	simple_query = "%@#{username}%"
+	long_query = "%@<#{username}% "
+
+	posts = Post.eager(:user).
+		where(Sequel.like(:post_text, simple_query)).
+		or(Sequel.like(:post_text, long_query)).
+		reverse_order(:post_date).
+		limit(256).all
+
+	erb :timeline, :layout => :_layout, :locals => {
+		:post_count => posts.length,
+		:posts => posts.select{|p| !p.user.nil? }
+	}
+end
+
 post '/user/add' do 
 	username = params[:username]
 	url = params[:url]
