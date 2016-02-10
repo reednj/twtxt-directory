@@ -100,9 +100,30 @@ class UserHelper
 			UpdateHelper.add_update "#{new_update_count} update(s) were added for @#{user.username}"
 		end
 
-		updates.each do |u|
-			post = Post.from_update u, user
-			post.save
+		DB.transaction do
+			# in the db we just delete everything, and reinsert the last 100 posts
+			# this is not really the best way to do things, but this simple way will
+			# work better until a faster / more complete way to syncing the data files
+			# to the db is required
+			DB[:posts].where(:user_id => user.user_id).delete()
+
+			#
+			# we generate an array of hashes that can be passed to the mulit_insert
+			# method, which will do a bulk insert to the server, which is important
+			# because there is 18ms latency to the db in our setup 
+			#
+			update_data = updates.first(100).map do |u|
+				id = Post.generate_id "[#{user.user_id}]-[#{u.date}]-[#{u.text}]"
+				
+				h = {
+					:post_id => id, 
+					:user_id => user.user_id, 
+					:post_date => u.date, 
+					:post_text => u.text
+				}
+			end
+
+			DB[:posts].multi_insert update_data
 		end
 	end
 
