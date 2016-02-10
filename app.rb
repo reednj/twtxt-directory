@@ -99,11 +99,12 @@ get '/timeline/all' do
 
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => total_count,
-		:posts => Post.eager(:user).reverse_order(:post_date).limit(256).all.select{|p| !p.user.nil? }
+		:posts => Post.eager(:user).reverse_order(:post_date).limit(256).all.select{|p| !p.user.nil? },
+		:target_user => nil
 	}
 end
 
-get '/user/:username/mentions' do |username|
+get '/user/:username/replies' do |username|
 	simple_query = "%@#{username}%"
 	long_query = "%@<#{username}% "
 
@@ -115,7 +116,8 @@ get '/user/:username/mentions' do |username|
 
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => posts.length,
-		:posts => posts.select{|p| !p.user.nil? }
+		:posts => posts.select{|p| !p.user.nil? },
+		:target_user => username
 	}
 end
 
