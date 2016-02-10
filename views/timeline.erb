@@ -1,0 +1,20 @@
+<% content_for :title do %>
+	twtxt user directory / all
+<% end %>
+
+<% content_for :body do %>
+
+<div class='section'>
+	showing updates from all users [<%= posts.length %> updates]
+</div>
+
+<% posts.each do |post| %>
+	<div class='update'>
+		<div class='header' title='<%= post.date %>'>
+			<a class='user-link' href='<%= post.user.profile_url %>'>@<%= post.user.username %></a> [<%= post.date.diff_in_words %>]
+		</div>
+		<div class='content'><%== post.html %></div>
+	</div>
+<% end %>
+	
+<% end %>

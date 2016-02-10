@@ -86,6 +86,12 @@ get '/recent' do
 	}
 end
 
+get '/timeline/all' do
+	erb :timeline, :layout => :_layout, :locals => {
+		:posts => Post.eager(:user).reverse_order(:post_date).take(256).select{|p| !p.user.nil? }
+	}
+end
+
 post '/user/add' do 
 	username = params[:username]
 	url = params[:url]

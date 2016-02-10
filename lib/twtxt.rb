@@ -9,9 +9,9 @@ require 'rest-client'
 class TwtxtUpdate
 	attr_accessor :date
 	attr_accessor :text
+	@max_len = 140
 
 	def initialize()
-		@max_len = 140
 		self.date = Time.now
 	end
 
@@ -36,9 +36,9 @@ class TwtxtUpdate
 		"#{self.date.utc.iso8601}\t#{self.text}"
 	end
 
-	def html
-		h = self.text.truncate(@max_len).escape_html
-		urls = URI::extract(self.text).select {|u| u.start_with? 'http' }
+	def self.to_html(text)
+		h = text.truncate(@max_len).escape_html
+		urls = URI::extract(text).select {|u| u.start_with? 'http' }
 
 		# find the user links. Remove those from the urls collection
 		user_link = /( |^)@&lt;([a-z0-9_]+)? (http.+?)&gt;( |$)/i
@@ -65,6 +65,10 @@ class TwtxtUpdate
 		end
 
 		h
+	end
+
+	def html
+		self.class.to_html(self.text)
 	end
 
 	# appends the update to the given path

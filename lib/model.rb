@@ -11,6 +11,7 @@ class Sequel::Model
 end
 
 class User < Sequel::Model
+	one_to_many :posts
 
 	dataset_module do
 		def exist?(id)
@@ -64,6 +65,8 @@ class User < Sequel::Model
 end
 
 class Post < Sequel::Model
+	many_to_one :user
+	
 	dataset_module do
 		def exist?(id)
 			!self[id].nil?
@@ -87,10 +90,8 @@ class Post < Sequel::Model
 		def generate_short_id
 			generate_id[0..16]
 		end
-	end
 
-	def hash
-		self.class.generate_id "#{date.iso8601} #{text}"
+
 	end
 
 	def text
@@ -99,5 +100,9 @@ class Post < Sequel::Model
 
 	def date
 		post_date
+	end
+
+	def html
+		TwtxtUpdate.to_html(self.text)
 	end
 end
