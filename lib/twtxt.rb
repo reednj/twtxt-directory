@@ -99,6 +99,11 @@ class UserHelper
 		if new_update_count > 0 && user.username != 'directory'
 			UpdateHelper.add_update "#{new_update_count} update(s) were added for @#{user.username}"
 		end
+
+		updates.each do |u|
+			post = Post.from_update u, user
+			post.save
+		end
 	end
 
 	def self.update_user(user)

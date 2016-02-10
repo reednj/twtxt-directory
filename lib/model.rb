@@ -63,3 +63,41 @@ class User < Sequel::Model
 	end
 end
 
+class Post < Sequel::Model
+	dataset_module do
+		def exist?(id)
+			!self[id].nil?
+		end
+
+		def from_update(update, user)
+			user_id = (user.is_a? String)? user : user.user_id
+
+			post = Post.new
+			post.user_id = user_id
+			post.post_text = update.text
+			post.post_date = update.date
+			post.post_id = post.hash
+			return post
+		end
+
+		def generate_id(s)
+			s.sha1
+		end
+
+		def generate_short_id
+			generate_id[0..16]
+		end
+	end
+
+	def hash
+		self.class.generate_id "#{date.iso8601} #{text}"
+	end
+
+	def text
+		post_text
+	end
+
+	def date
+		post_date
+	end
+end
