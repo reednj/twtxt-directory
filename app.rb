@@ -80,6 +80,12 @@ get '/' do
 	}
 end
 
+get '/recent' do
+	erb :recent, :layout => :_layout, :locals => {
+		:users => User.reverse_order(:last_post_date).take(500)
+	}
+end
+
 post '/user/add' do 
 	username = params[:username]
 	url = params[:url]
