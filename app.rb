@@ -105,6 +105,9 @@ post '/user/add' do
 		halt_with_text 500, "could not load updates from that url (#{e.message})"
 	end
 
+	# the user was added - we want to log this fact in @directory
+	UpdateHelper.add_update "user @#{user.username} was added to the directory"
+
 	if request.xhr?
 		json user 
 	else
