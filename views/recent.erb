@@ -16,7 +16,7 @@
 				<a class='user-link' href='<%= user.profile_url %>'>@<%= user.username %></a>
 			</td>
 
-			<td class='numeric'>[<a href='<%= user.profile_url %>'>last posted <%= user.last_post_date.diff_in_words %></a>]</td>
+			<td class='numeric'>[<a href='<%= user.profile_url %>'>last post <%= user.last_post_date.diff_in_words %></a>]</td>
 		</tr>
 	<% end %>
 	</tbody>
