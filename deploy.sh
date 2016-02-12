@@ -5,7 +5,7 @@ SRC=~/code/twtxt.git
 CONFIG=~/code/config_backup/twtxt
 
 # update the data
-mkdir $SRC/data
+mkdir -p $SRC/data
 cp $WEB/data/* $SRC/data
 
 # update the data
