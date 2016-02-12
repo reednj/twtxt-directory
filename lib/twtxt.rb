@@ -91,6 +91,8 @@ class UpdateHelper
 end
 
 class UserHelper
+	@user_agent = 'twtxt/1.1 (+http://twtxt.reednj.com/twtxt/directory.twtxt.txt, @directory) twtxt-dir/1.1'
+
 	def self.update_user_record(user, data)
 		updates = UserHelper.updates_from_data(data)
 		new_update_count = updates.length - user.update_count 
@@ -148,11 +150,7 @@ class UserHelper
 
 		# if no exception was raised when checking the headers we
 		# can continue getting the data
-		data = RestClient::Request.execute({
-			:method => :get, 
-			:url => user.update_url, 
-			:timeout => 20
-		})
+		data = RestClient.get user.update_url, :user_agent => @user_agent
 
 		File.write user.data_path, data
 		return data

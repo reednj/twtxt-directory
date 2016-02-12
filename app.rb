@@ -16,10 +16,11 @@ require './lib/sinatra-schema-backup'
 use Rack::Deflater
 set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
+set :short_version, settings.version.split('-').first
 
 # when this is true, all sql queries will be dumped to the console, making
 # it easier to debug exactly what the models are doing
-set :log_sql, true
+set :log_sql, false
 
 set :hidden_users, ['directory']
 
