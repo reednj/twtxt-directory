@@ -21,6 +21,8 @@ set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
 # it easier to debug exactly what the models are doing
 set :log_sql, true
 
+set :hidden_users, ['directory']
+
 configure :development do
 	also_reload './lib/twtxt.rb'
 	also_reload './lib/model.rb'
@@ -97,9 +99,15 @@ end
 get '/timeline/all' do
 	total_count = Post.count
 
+	posts = Post.eager(:user).reverse_order(:post_date).limit(256).all
+
+	posts.select! do |p|
+		!(p.user.nil? || settings.hidden_users.include?(p.user.username))
+	end
+
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => total_count,
-		:posts => Post.eager(:user).reverse_order(:post_date).limit(256).all.select{|p| !p.user.nil? },
+		:posts => posts,
 		:target_user => nil
 	}
 end
@@ -114,9 +122,13 @@ get '/user/:username/replies' do |username|
 		reverse_order(:post_date).
 		limit(256).all
 
+	posts.select! do |p|
+		!(p.user.nil? || settings.hidden_users.include?(p.user.username))
+	end
+
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => posts.length,
-		:posts => posts.select{|p| !p.user.nil? },
+		:posts => posts,
 		:target_user => username
 	}
 end
