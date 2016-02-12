@@ -4,19 +4,6 @@ body {
 	font-family: courier new
 }
 
-#content {
-	margin: 0 auto;
-	max-width: 800px;
-	padding: 0 0.5em;
-	word-wrap: break-word;
-}
-
-#header {
-	background-color: #073642;
-	padding: 10px 8px;
-	margin-bottom: 8px;
-}
-
 em {
 	font-weight: bold;
 	font-style: normal;
@@ -28,6 +15,51 @@ a {
 
 a:active {
 	color: #268bd2 !important;
+}
+
+input[type=text] {
+	padding: 3px;
+}
+
+input[type=button], 
+input[type=submit] {
+	font-weight: bold;
+	padding: 5px 8px;
+	background-color: #eee8d5;
+	border: none;
+	outline: none;
+}
+
+input[type=button]:active, 
+input[type=submit]:active {
+	background-color: #93a1a1;
+}
+
+.error-message {
+	color: #dc322f;
+}
+
+.error-message.ok {
+	color: #859900
+}
+
+.section {
+	margin-bottom: 8px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #839496;
+}
+
+#content {
+	margin: 0 auto;
+	max-width: 800px;
+	padding: 0 0.5em;
+	word-wrap: break-word;
+}
+
+#header {
+	background-color: #073642;
+	padding: 10px 8px;
+	margin-bottom: 8px;
 }
 
 a.user-link {
@@ -60,47 +92,15 @@ td.numeric {
 .update .content {
 }
 
-.section {
-	margin-bottom: 8px;
-	padding-bottom: 8px;
-	border-bottom: 1px solid #839496;
-}
-
 .command {
 	padding: 8px;
 	background-color: black;
-}
-
-input[type=text] {
-	padding: 3px;
-}
-
-input[type=button], 
-input[type=submit] {
-	font-weight: bold;
-	padding: 5px 8px;
-	background-color: #eee8d5;
-	border: none;
-	outline: none;
-}
-
-input[type=button]:active, 
-input[type=submit]:active {
-	background-color: #93a1a1;
 }
 
 input#user-username {
 	width: 150px;
 }
 
-
-.error-message {
-	color: #dc322f;
-}
-
-.error-message.ok {
-	color: #859900
-}
 
 #user-add-error {
 	padding-top: 8px;
