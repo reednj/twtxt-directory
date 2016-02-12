@@ -87,7 +87,8 @@ end
 
 get '/' do
 	erb :home, :layout => :_layout, :locals => {
-		:users => User.order_by(:username).take(500)
+		:users => User.order_by(:username).take(500),
+		:user_count => User.count
 	}
 end
 
