@@ -42,12 +42,12 @@ class TwtxtUpdate
 
 		# find the user links. Remove those from the urls collection
 		user_link = /( |^)@&lt;([a-z0-9_]+)? (http.+?)&gt;( |$)/i
-		at_user = /( |^)@([a-z0-9_]+)?( |$)/i
+		at_user = /(\W|^)@([a-z0-9_]+?)(\W|$)/i
 
 		while h =~ at_user
 			match = h.match(at_user)
 			name = match.captures[1]
-			h.sub! at_user, " <a class='auto-link' href='/user/at/#{name}'>&commat;#{name}</a> "
+			h.sub! "@#{name}", "<a class='auto-link' href='/user/at/#{name}'>&commat;#{name}</a>"
 		end
 
 		while h =~ user_link
