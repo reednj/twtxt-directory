@@ -61,6 +61,7 @@ class TwtxtUpdate
 
 		# make all the urls in the text clickable
 		urls.each do |url|
+			url.chop! if '.,:;()[]'.to_a.any? { |c| url.end_with? c }
 			h.gsub! url.escape_html, "<a class='auto-link' href='#{url}'>#{url.escape_html}</a>"
 		end
 

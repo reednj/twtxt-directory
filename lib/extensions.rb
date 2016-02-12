@@ -113,6 +113,10 @@ class Numeric
 end
 
 class String
+	def to_a
+		self.split ''
+	end
+
 	def sha1
 		Digest::SHA1.hexdigest self
 	end
