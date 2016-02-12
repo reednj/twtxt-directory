@@ -116,7 +116,7 @@ end
 
 get '/user/:username/replies' do |username|
 	simple_query = "%@#{username}%"
-	long_query = "%@<#{username}% "
+	long_query = "%@<#{username} %"
 
 	posts = Post.eager(:user).
 		where(Sequel.like(:post_text, simple_query)).
