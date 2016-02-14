@@ -114,7 +114,7 @@ input#user-username {
 	padding-left: 8px;
 }
 
-@media only screen and (max-width:500px) {
+@media only screen and (max-width:520px) {
 	.wide-only {
 		display: none;
 	}

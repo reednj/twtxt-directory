@@ -1,5 +1,9 @@
 <% content_for :title do %>
-	twtxt user directory / all
+	<% if target_user.nil? %>
+		twtxt-dir / all
+	<% else %>
+		twtxt-dir / <%= target_user %> / replies
+	<% end %>
 <% end %>
 
 <% content_for :body do %>
