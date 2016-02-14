@@ -7,18 +7,37 @@ require_relative '../lib/extensions'
 
 class App
 	def main
-		# get the oldest updated user, and update them
-		user = self.user_to_update
+		update_count = 3
+		recent_update_count = 3
 
+		# get the oldest updated user, and update them
+		(0...update_count).each do 
+			self.run_update self.user_to_update
+			sleep 1.0
+		end
+
+		# get the oldest updated user, and update them
+		(0...recent_update_count).each do 
+			self.run_update self.active_user_to_update
+			sleep 1.0
+		end
+
+	end
+
+	def run_update(user)
 		if user.nil?
 			puts 'no users require updates'
 			return
 		end
 
-		UserHelper.update_user(user)
-
+		update_user user
 		puts "@#{user.username} updated"
+		delete_if_old user
 
+		return user
+	end
+
+	def delete_if_old(user)
 		# now we refresh the data in the user, and check if they have any updates
 		# users that still have no updates 3 days after they were created get deleted
 		user.refresh
@@ -26,11 +45,25 @@ class App
 			user.delete
 			puts "@#{user.username} deleted - no updates for 3 days"
 		end
+	end
 
+	def update_user(user)
+		# do it inside a worker thread so we can kill it if it runs for too long - this is
+		# protection against someone sneaking in a super large download
+		t = WorkerThread.new.start :timeout => 30.0 do
+			UserHelper.update_user(user)
+		end
+
+		t.join
+		return user
 	end
 
 	def user_to_update
 		User.where('updated_date < ?', 5.minutes.ago).order_by(:updated_date).first
+	end
+
+	def active_user_to_update
+		User.active.where('updated_date < ?', 5.minutes.ago).order_by(:updated_date).first
 	end
 end
 

@@ -1,5 +1,40 @@
 require 'digest/sha1'
 
+class WorkerThread
+	def initialize
+
+	end
+
+	def start(options = nil)
+		raise 'background_task needs a block' unless block_given?
+
+		options ||= {}
+
+		worker = Thread.new do
+			begin
+				yield
+			rescue => e
+				File.append 'error.log', "#{e.class.to_s}\t#{e.message}\n"
+			end
+		end
+
+		# if the user set a timeout then we need a thread to monitor
+		# the worker to make sure it doesn't run too long
+		if !options[:timeout].nil?
+			Thread.new do
+				sleep options[:timeout].to_f
+				
+				if worker.status != false
+					worker.kill 
+					File.append 'error.log', "background_task thread timeout\n"
+				end
+			end
+		end
+
+		worker
+	end
+end
+
 class GitVersion
 	def self.current(gitdir='./.git')
 		gitdir = './.git' if !File.exist? gitdir

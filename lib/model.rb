@@ -42,6 +42,10 @@ class User < Sequel::Model
 		def id_for_url(url)
 			url.sha1
 		end
+
+		def active
+			where('last_post_date > ?', 1.day.ago)
+		end
 	end
 
 	def data_path
