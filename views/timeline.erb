@@ -6,9 +6,13 @@
 
 <div class='section'>
 	<% if target_user.nil? %>
-		showing updates from all users [<%= post_count %> updates]
+		showing updates from all users
 	<% else %>
 		showing replies to <a class='user-link' href='/user/at/<%= target_user %>'>@<%= target_user %></a>
+	<% end %>
+
+	<% if target_user.nil? %>
+		<div style='float:right'>[<%= post_count %> updates]</div>
 	<% end %>
 </div>
 
