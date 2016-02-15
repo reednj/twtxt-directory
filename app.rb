@@ -175,7 +175,7 @@ get '/user/:user_id' do |user_id|
 
 	erb :user, :layout => :_layout, :locals => {
 		:user => user,
-		:data => updates
+		:data => updates.first(256)
 	}
 end
 
