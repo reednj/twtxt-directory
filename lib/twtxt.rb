@@ -23,6 +23,7 @@ class TwtxtUpdate
 		begin
 			update.date = Time.parse(fields[0]).localtime
 			raise 'update is in the future' if update.date > 1.day.from_now
+			raise 'update is too far in the past' if update.date < Time.gm(1984,1,1)
 			
 			update.text = fields[1].force_encoding('utf-8')		
 		rescue => e
