@@ -55,7 +55,7 @@ class TwtxtUpdate
 			name = match.captures[1]
 			url = match.captures[2].unescape_html
 
-			h.sub! user_link, " <a class='auto-link' title='#{url}' href='#{User.id_for_url(url)[0..16]}'>@#{name}</a> "
+			h.sub! user_link, " <a class='auto-link' title='#{url}' href='/user/#{User.id_for_url(url)[0..16]}'>@#{name}</a> "
 			urls.delete url
 		end
 
