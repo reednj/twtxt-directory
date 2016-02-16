@@ -73,6 +73,10 @@ helpers do
 		]
 	end
 
+	def validate_format!(format)
+		halt_with_text 500, "invalid format (#{format})" if !format.nil? && format != 'txt'
+	end
+
 end
 
 get '/' do
@@ -89,7 +93,7 @@ get '/recent' do
 end
 
 get '/timeline/all.?:format?' do |format|
-	halt_with_text 500, "invalid format (#{format})" if !format.nil? && format != 'txt'
+	validate_format! format
 
 	total_count = Post.count
 	posts = Post.eager(:user).reverse_order(:post_date).limit(256).all
@@ -98,6 +102,7 @@ get '/timeline/all.?:format?' do |format|
 		!(p.user.nil? || settings.hidden_users.include?(p.user.username))
 	end
 
+	# return text if requried
 	return text(posts) if format == 'txt'
 
 	erb :timeline, :layout => :_layout, :locals => {
@@ -107,7 +112,9 @@ get '/timeline/all.?:format?' do |format|
 	}
 end
 
-get '/user/:username/replies' do |username|
+get '/user/:username/replies.?:format?' do |username, format|
+	validate_format! format
+
 	simple_query = "%@#{username}%"
 	long_query = "%@<#{username} %"
 
@@ -120,6 +127,9 @@ get '/user/:username/replies' do |username|
 	posts.select! do |p|
 		!(p.user.nil? || settings.hidden_users.include?(p.user.username))
 	end
+
+	# return text if requried
+	return text(posts) if format == 'txt'
 
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => posts.length,
