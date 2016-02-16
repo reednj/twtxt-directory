@@ -12,7 +12,7 @@
 	<% if target_user.nil? %>
 		showing updates from all users
 	<% else %>
-		showing replies to <a class='user-link' href='/user/at/<%= target_user %>'>@<%= target_user %></a>
+		showing replies to <%== html_user_link target_user %></a>
 	<% end %>
 
 	<% if target_user.nil? %>
