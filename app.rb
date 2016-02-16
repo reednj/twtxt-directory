@@ -12,6 +12,7 @@ require './lib/model'
 require './lib/twtxt'
 require './lib/extensions'
 require './lib/sinatra-schema-backup'
+require './lib/sinatra-basic-auth'
 
 use Rack::Deflater
 set :erb, :escape_html => true
@@ -22,7 +23,10 @@ set :short_version, settings.version.split('-').first
 # it easier to debug exactly what the models are doing
 set :log_sql, false
 
+# these users will be hidden from the timeline, and from the user replies page
 set :hidden_users, ['directory']
+
+set :admin_password, ADMIN_PASSWORD
 
 configure :development do
 	also_reload './lib/twtxt.rb'
@@ -112,6 +116,8 @@ get '/user/:username/replies' do |username|
 end
 
 get '/update/new' do
+	admin_only!
+
 	erb :create_post, :layout => :_layout, :locals => {
 		:username => 'reednj',
 		:result => params[:r] || nil,
@@ -122,6 +128,8 @@ get '/update/new' do
 end
 
 post '/update/add' do
+	admin_only!
+
 	text = (params[:content] || '').strip
 	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
 

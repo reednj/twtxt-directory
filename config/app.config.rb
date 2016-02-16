@@ -6,3 +6,5 @@ DB_CONFIG = {
 	:host => '127.0.0.1',
 	:database => 'twtxt'
 }
+
+ADMIN_PASSWORD = 'admin'
