@@ -36,7 +36,6 @@ input[type=submit]:active {
 }
 
 textarea.update-content {
-	margin-bottom: 4px;
 	padding: 5px 8px;
 	width: 320px;
 	height: 90px;

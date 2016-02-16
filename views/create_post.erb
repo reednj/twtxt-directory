@@ -11,7 +11,6 @@
 				var text = $('#js-update-content').val() || '';
 
 				$('#js-char-count').text(maxLength - text.length);
-
 			}
 		}
 
@@ -24,12 +23,17 @@
 
 <% content_for :body do %>
 
-<form>
-	<div class='section'>posting as <%== html_user_link username %></div>
-	
+<div class='section'>posting as <%== html_user_link username %></div>
+
+<form action='/update/add' method='post'>
 	<div>
 		<textarea name='content' id='js-update-content' class='update-content'></textarea>
-		<div>
+		
+		<% if !result.nil? && !result.empty? %>
+			<div class='error-message'><%= result %></div>
+		<% end %>
+
+		<div style='margin-top: 4px;'>
 			<input type='submit' value='post'>
 			<span id='js-char-count'></span>
 		</div>

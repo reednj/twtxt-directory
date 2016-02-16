@@ -114,10 +114,34 @@ end
 get '/update/new' do
 	erb :create_post, :layout => :_layout, :locals => {
 		:username => 'reednj',
+		:result => params[:r] || nil,
 		:js => {
 			:update_length => 140
 		}
 	}
+end
+
+post '/update/add' do
+	text = (params[:content] || '').strip
+	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
+
+	# at the moment this can only post as me, with a hardcoded command, but maybe
+	# later I will expand this to add self hosted accounts
+	update = TwtxtUpdate.new(text)
+
+	host = 'reednj@reednj.com'
+	path = '~/reednj.com/reednj.twtxt.txt'
+	cmd = "echo #{update.to_s.wrap_in_quotes} >> #{path}"
+
+	# this will fail if the command contains single quotes, but I don't really care
+	# as it is only being used by me
+	result = `ssh #{host} '#{cmd}' 2>&1`
+	
+	if !result.nil? && !result.empty?
+		redirect to('/update/new?r=' + URI.encode(result))
+	else
+		redirect to('/update/new')
+	end
 end
 
 post '/user/add' do 

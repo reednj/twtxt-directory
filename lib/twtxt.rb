@@ -11,8 +11,9 @@ class TwtxtUpdate
 	attr_accessor :text
 	@max_len = 140
 
-	def initialize()
+	def initialize(text = nil)
 		self.date = Time.now
+		self.text = text unless text.nil?
 	end
 
 	def self.from_s(line)

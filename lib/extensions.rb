@@ -183,6 +183,12 @@ class String
 	def unescape_html
 		CGI.unescapeHTML self
 	end
+
+	# wraps the string in double quotes and escapes any quotes in the
+	# string with a backslash
+	def wrap_in_quotes
+		"\"#{gsub('"', '\"')}\""
+	end
 end
 
 class Array
