@@ -125,7 +125,7 @@ get '/user/:username/replies.?:format?' do |username, format|
 		limit(256).all
 
 	posts.select! do |p|
-		!(p.user.nil? || settings.hidden_users.include?(p.user.username))
+		!(p.user.nil? || settings.hidden_users.include?(p.user.username)) && p.text =~ /(@|@<)#{username}\W/
 	end
 
 	# return text if requried
