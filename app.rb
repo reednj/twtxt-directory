@@ -63,6 +63,16 @@ helpers do
 		return "<a class='user-link' href='/user/at/#{username}'>@#{username}</a>"
 	end
 
+	def text(data, options = nil)
+		options ||= {}
+
+		return [
+			options[:code] || 200,
+			{'Content-Type' => 'text/plain; charset=utf-8'},
+			data.respond_to?(:to_txt) ? data.to_txt : data.to_s
+		]
+	end
+
 end
 
 get '/' do
@@ -78,14 +88,17 @@ get '/recent' do
 	}
 end
 
-get '/timeline/all' do
-	total_count = Post.count
+get '/timeline/all.?:format?' do |format|
+	halt_with_text 500, "invalid format (#{format})" if !format.nil? && format != 'txt'
 
+	total_count = Post.count
 	posts = Post.eager(:user).reverse_order(:post_date).limit(256).all
 
 	posts.select! do |p|
 		!(p.user.nil? || settings.hidden_users.include?(p.user.username))
 	end
+
+	return text(posts) if format == 'txt'
 
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => total_count,

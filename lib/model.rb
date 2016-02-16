@@ -67,6 +67,10 @@ class User < Sequel::Model
 	def profile_url
 		"/user/#{user_id[0...16]}"
 	end
+
+	def to_txt
+		"@<#{username} #{update_url}>"
+	end
 end
 
 class Post < Sequel::Model
@@ -108,5 +112,9 @@ class Post < Sequel::Model
 
 	def html
 		TwtxtUpdate.to_html(self.text)
+	end
+
+	def to_txt
+		"#{user.to_txt}\t#{date.iso8601}\t#{text}"
 	end
 end

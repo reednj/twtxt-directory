@@ -200,6 +200,10 @@ class Array
 		return o if o.kind_of? Array
 		return [o]
 	end
+
+	def to_txt
+		self.map {|a| a.respond_to?(:to_txt) ? a.to_txt : a.to_s }.join("\n")
+	end
 end
 
 class Fixnum
