@@ -1,0 +1,39 @@
+<% content_for :title do %>
+	twtxt-dir - add an update
+<% end %>
+
+<% content_for :header do %>
+
+	<script type='text/javascript'>
+		var Ui = {
+			onTextChanged: function() {
+				var maxLength = _js.update_length || 140;
+				var text = $('#js-update-content').val() || '';
+
+				$('#js-char-count').text(maxLength - text.length);
+
+			}
+		}
+
+		$(window).load(function() {
+			$('#js-update-content').on('keyup', Ui.onTextChanged);
+		});
+	</script>
+
+<% end %>
+
+<% content_for :body do %>
+
+<form>
+	<div class='section'>posting as <%== html_user_link username %></div>
+	
+	<div>
+		<textarea name='content' id='js-update-content' class='update-content'></textarea>
+		<div>
+			<input type='submit' value='post'>
+			<span id='js-char-count'></span>
+		</div>
+	</div>
+</form>
+
+<% end %>

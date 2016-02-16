@@ -35,6 +35,13 @@ input[type=submit]:active {
 	background-color: #93a1a1;
 }
 
+textarea.update-content {
+	margin-bottom: 4px;
+	padding: 5px 8px;
+	width: 320px;
+	height: 90px;
+}
+
 .error-message {
 	color: #dc322f;
 }

@@ -17,9 +17,9 @@
 	<script type='text/javascript' src='/js/jquery-2.1.4.min.js'></script>
 
 
-	<% if defined? _js %>
+	<% if defined? js %>
 	<script type='text/javascript'>
-		_js = <%== _js.to_json %>;
+		_js = <%== js.to_json %>;
 	</script>
 	<% end %>
 
@@ -47,6 +47,7 @@
 
 </div>
 
+<% if settings.production? %>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -55,8 +56,8 @@
 
   ga('create', 'UA-57284-14', 'auto');
   ga('send', 'pageview');
-
 </script>
+<% end %>
 
 </body>
 </html>

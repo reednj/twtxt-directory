@@ -55,6 +55,10 @@ helpers do
 		return username =~ /^[a-zA-Z_\-0-9]+$/
 	end
 
+	def html_user_link(username)
+		return "<a class='user-link' href='/user/at/#{username}'>@#{username}</a>"
+	end
+
 end
 
 get '/' do
@@ -104,6 +108,15 @@ get '/user/:username/replies' do |username|
 		:post_count => posts.length,
 		:posts => posts,
 		:target_user => username
+	}
+end
+
+get '/update/new' do
+	erb :create_post, :layout => :_layout, :locals => {
+		:username => 'reednj',
+		:js => {
+			:update_length => 140
+		}
 	}
 end
 
