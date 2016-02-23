@@ -212,8 +212,16 @@ post '/user/add' do
 
 end
 
-get '/user/at/:username' do |username|
-	user = User.where(:username => username).first
+get '/user/at/:username_or_id' do |username_or_id|
+	username_hint = params[:n]
+
+	# keep querying with all the information we have until we find something
+	# could do with more efficiently in a single query, but its probably not 
+	# worth it atm
+	user = User.get_by_id username_or_id 
+	user = User.where(:username => username_or_id).first if user.nil?
+	user = User.where(:username => username_hint).first if user.nil? && !username_hint.nil?
+	
 	halt_with_text 404, 'user not found' if user.nil?
 	redirect to(user.profile_url)
 end
