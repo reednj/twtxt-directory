@@ -1,18 +1,22 @@
 <% content_for :title do %>
-	<% if target_user.nil? %>
+	<% if timeline_type == :all %>
 		twtxt-dir / all
-	<% else %>
+	<% elsif timeline_type == :replies  %>
 		twtxt-dir / <%= target_user %> / replies
+	<% elsif timeline_type == :single_post  %>
+		twtxt-dir / <%= target_user %> / <%= posts.first.created_date %>
 	<% end %>
 <% end %>
 
 <% content_for :body do %>
 
 <div class='section'>
-	<% if target_user.nil? %>
+	<% if timeline_type == :all %>
 		showing updates from all users
-	<% else %>
-		showing replies to <%== html_user_link target_user %></a>
+	<% elsif timeline_type == :replies %>
+		showing replies to <%== html_user_link target_user %>
+	<% elsif timeline_type == :single_post  %>
+		post from <%== html_user_link target_user %> on <%= posts.first.created_date %>
 	<% end %>
 
 	<% if target_user.nil? %>
@@ -23,9 +27,10 @@
 <% posts.each do |post| %>
 	<div class='update'>
 		<div class='header' title='<%= post.date %>'>
-			<a class='user-link' href='<%= post.user.profile_url %>'>@<%= post.user.username %></a> [<%= post.date.diff_in_words %>]
+			<a class='user-link' href='<%= post.user.profile_url %>'>@<%= post.user.username %></a> 
+			[<%== html_post_link post %>]
 		</div>
-		<div class='content'><%== post.html %></div>
+		<div class='content'><%== timeline_type == :single_post ? post.html(:post_max_length => 512) : post.html %></div>
 	</div>
 <% end %>
 	

@@ -100,6 +100,12 @@ class Post < Sequel::Model
 			generate_id[0..16]
 		end
 
+		def get_by_id(partial_id)
+			posts = Post.where(Sequel.like(:post_id, partial_id + '%')).take(100)
+			raise 'more than one user with that key' if posts.count > 1
+			return nil if posts.empty?
+			return posts[0]
+		end
 	end
 
 	def text
@@ -110,11 +116,16 @@ class Post < Sequel::Model
 		post_date
 	end
 
-	def html
-		TwtxtUpdate.to_html(self.text)
+	def html(options = nil)
+		TwtxtUpdate.to_html(self.text, options)
 	end
 
 	def to_txt
 		"#{user.to_txt}\t#{date.iso8601}\t#{text}"
 	end
+
+	def post_url
+		"/update/#{post_id[0...16]}"
+	end
+
 end

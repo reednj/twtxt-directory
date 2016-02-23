@@ -38,8 +38,11 @@ class TwtxtUpdate
 		"#{self.date.utc.iso8601}\t#{self.text}"
 	end
 
-	def self.to_html(text)
-		h = text.truncate(@max_len).escape_html
+	def self.to_html(text, options = nil)
+		options ||= {}
+		post_max_length = options[:post_max_length] || @max_len
+
+		h = text.truncate(post_max_length).escape_html
 		urls = URI::extract(text).select {|u| u.start_with? 'http' }
 
 		# find the user links. Remove those from the urls collection
@@ -72,8 +75,8 @@ class TwtxtUpdate
 		h
 	end
 
-	def html
-		self.class.to_html(self.text)
+	def html(options = nil)
+		self.class.to_html(self.text, options)
 	end
 
 	# appends the update to the given path

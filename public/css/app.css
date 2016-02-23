@@ -80,6 +80,10 @@ a.user-link {
 	font-style: bold;
 }
 
+a.post-link {
+	color: inherit !important;
+}
+
 table.console-table {
 	width: 100%;
 	border-collapse: collapse;

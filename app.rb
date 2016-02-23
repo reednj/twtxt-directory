@@ -60,7 +60,11 @@ helpers do
 	end
 
 	def html_user_link(username)
-		return "<a class='user-link' href='/user/at/#{username}'>@#{username}</a>"
+		"<a class='user-link' href='/user/at/#{username}'>@#{username}</a>"
+	end
+
+	def html_post_link(post)
+		"<a class='post-link' href='#{post.post_url}'>#{post.date.diff_in_words}</a>"
 	end
 
 	def text(data, options = nil)
@@ -108,7 +112,8 @@ get '/timeline/all.?:format?' do |format|
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => total_count,
 		:posts => posts,
-		:target_user => nil
+		:target_user => nil,
+		:timeline_type => :all
 	}
 end
 
@@ -134,7 +139,8 @@ get '/user/:username/replies.?:format?' do |username, format|
 	erb :timeline, :layout => :_layout, :locals => {
 		:post_count => posts.length,
 		:posts => posts,
-		:target_user => username
+		:target_user => username,
+		:timeline_type => :replies
 	}
 end
 
@@ -173,6 +179,17 @@ post '/update/add' do
 	else
 		redirect to('/update/new')
 	end
+end
+
+get '/update/:post_id' do |post_id|
+	post = Post.get_by_id post_id
+	halt_with_text 404, 'post not found' if post.nil?
+
+	erb :timeline, :layout => :_layout, :locals => {
+		:posts => [post],
+		:target_user => post.user.username,
+		:timeline_type => :single_post
+	}
 end
 
 post '/user/add' do 
