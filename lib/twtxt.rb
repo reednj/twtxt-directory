@@ -43,7 +43,7 @@ class TwtxtUpdate
 		urls = URI::extract(text).select {|u| u.start_with? 'http' }
 
 		# find the user links. Remove those from the urls collection
-		user_link = /( |^)@&lt;([a-z0-9_]+)? (http.+?)&gt;( |$)/i
+		user_link = /(\W|^)@&lt;([a-z0-9_]+)? (http.+?)&gt;(\W|$)/i
 		at_user = /(\W|^)@([a-z0-9_]+?)(\W|$)/i
 
 		while h =~ at_user
