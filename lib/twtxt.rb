@@ -35,7 +35,8 @@ class TwtxtUpdate
 	end
 
 	def to_s
-		"#{self.date.utc.iso8601}\t#{self.text}"
+		text = self.text.gsub("\n", ' ')
+		"#{self.date.utc.iso8601}\t#{text}"
 	end
 
 	def self.to_html(text, options = nil)

@@ -14,6 +14,8 @@ require './lib/extensions'
 require './lib/sinatra-schema-backup'
 require './lib/sinatra-basic-auth'
 
+require './lib/sinatra-twitter-gateway'
+
 use Rack::Deflater
 set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')

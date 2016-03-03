@@ -7,4 +7,9 @@ DB_CONFIG = {
 	:database => 'twtxt'
 }
 
+TWITTER_CONFIG = {
+	:consumer_secret => 'xxx',
+	:access_token_secret => 'xxx'
+}
+
 ADMIN_PASSWORD = 'admin'
