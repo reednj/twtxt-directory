@@ -6,4 +6,5 @@ gem 'sequel'
 gem 'sinatra-contrib'
 gem 'rest-client'
 gem 'erubis'
+gem 'twitter'
 
