@@ -98,6 +98,13 @@ get '/recent' do
 	}
 end
 
+get '/users.txt' do
+	# add a delay as a naive strategy to stop DoS...
+	sleep 0.5 
+
+	text User.take(500)
+end
+
 get '/timeline/all.?:format?' do |format|
 	validate_format! format
 
