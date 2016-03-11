@@ -40,8 +40,7 @@ class User < Sequel::Model
 		end
 
 		def id_for_url(url)
-			url.gsub! 'https://', 'http://'
-			url.sha1
+			url.gsub('https://', 'http://').sha1
 		end
 
 		def active
