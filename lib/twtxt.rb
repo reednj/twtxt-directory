@@ -150,19 +150,36 @@ class UserHelper
 		user.save_changes
 
 		data = update_user_data(user)
-		update_user_record(user, data)
+		update_user_record(user, data) unless data.nil?
 	end
 
 	def self.update_user_data(user)
 		response = RestClient.head(user.update_url)
 		_check_update_headers! response.headers
 
+		headers = { :user_agent => @user_agent }
+		if !user.last_modified_date.nil?
+			headers[:'If-Modified-Since'] = user.last_modified_date.httpdate 
+		end
+
 		# if no exception was raised when checking the headers we
 		# can continue getting the data
-		data = RestClient.get user.update_url, :user_agent => @user_agent
+		begin
+			response = RestClient.get user.update_url, headers
+		rescue RestClient::NotModified
+			return nil
+		end
 
+		if response.code == 200 && !response.headers.nil? && !response.headers[:last_modified].nil?
+			last_modified = Time.parse response.headers[:last_modified]
+			user.last_modified_date = last_modified.localtime
+			user.save_changes
+		end
+
+		data = response.to_s
 		File.write user.data_path, data
 		return data
+		
 	end
 
 	def self._check_update_headers!(headers)
