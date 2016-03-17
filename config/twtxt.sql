@@ -34,6 +34,7 @@ CREATE TABLE `users` (
   `last_post_date` timestamp NULL DEFAULT NULL,
   `updated_date` timestamp NULL DEFAULT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_modified_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `updated_date` (`updated_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
