@@ -5,6 +5,10 @@ if !defined? DB
 	raise 'constant DB required to use sequel-event-log'
 end
 
+if !DB.is_a? Sequel::Database
+	raise "DB must be a Sequel::Database, but is actually #{DB.class}"
+end
+
 DB.create_table? :logged_events do
 	primary_key :event_id
 	String :user_id, :size => 64, :null => true
