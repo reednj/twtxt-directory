@@ -2,6 +2,8 @@ require 'uri'
 require 'cgi'
 require 'rest-client'
 
+require_relative './sequel-event-log'
+
 #
 # this contains a single Twtxt update, going to or from 
 # an update file
@@ -167,6 +169,7 @@ class UserHelper
 		begin
 			response = RestClient.get user.update_url, headers
 		rescue RestClient::NotModified
+			LoggedEvent.for_event('user_not_modified', :user_id => user.short_id, :description => user.username).save
 			return nil
 		end
 
@@ -178,6 +181,11 @@ class UserHelper
 
 		data = response.to_s
 		File.write user.data_path, data
+		LoggedEvent.for_event('user_updated', {
+			:user_id => user.short_id, 
+			:description => "#{user.username}, #{data.length} bytes"
+		}).save
+
 		return data
 		
 	end

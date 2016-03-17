@@ -58,6 +58,10 @@ class User < Sequel::Model
 		end
 	end
 
+	def short_id
+		user_id[0..16] unless user_id.nil?
+	end
+
 	def data_path
 		dir = File.dirname(__FILE__)
 		File.join dir, "../data/#{user_id}.txt"
