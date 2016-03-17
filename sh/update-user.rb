@@ -10,6 +10,12 @@ class App
 		update_count = 3
 		recent_update_count = 3
 
+		if ARGV.length > 0
+			user_id = ARGV.first
+			update_single_user user_id
+			return
+		end
+
 		# get the oldest updated user, and update them
 		(0...update_count).each do 
 			self.run_update self.user_to_update
@@ -22,6 +28,13 @@ class App
 			sleep 1.0
 		end
 
+	end
+
+	def update_single_user(user_id)
+		user = User.get_by_id user_id
+		raise "No user found with id '#{user_id}'" if user.nil?
+		run_update user
+		return user
 	end
 
 	def run_update(user)
