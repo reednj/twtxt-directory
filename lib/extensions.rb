@@ -14,7 +14,8 @@ class WorkerThread
 			begin
 				yield
 			rescue => e
-				File.append 'error.log', "#{e.class.to_s}\t#{e.message}\n"
+				File.append 'error.log', "#{Time.now.iso8601}\t#{e.class.to_s}\t#{e.message}\n"
+				raise e
 			end
 		end
 
@@ -26,7 +27,7 @@ class WorkerThread
 				
 				if worker.status != false
 					worker.kill 
-					File.append 'error.log', "background_task thread timeout\n"
+					File.append 'error.log', "#{Time.now.iso8601}\tbackground_task thread timeout\n"
 				end
 			end
 		end
