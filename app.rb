@@ -26,7 +26,7 @@ set :short_version, settings.version.split('-').first
 set :log_sql, false
 
 # these users will be hidden from the timeline, and from the user replies page
-set :hidden_users, ['directory']
+set :hidden_users, ['directory', 'soltempore', 'tiktok']
 
 set :admin_password, ADMIN_PASSWORD
 
