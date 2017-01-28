@@ -14,6 +14,7 @@ cp $WEB/public/twtxt/*.txt $SRC/public/twtxt
 # copy the required files to the website
 rm -rf $WEB/*
 cp -R $SRC/* $WEB
+cp $SRC/.ruby-version $WEB
 cp $CONFIG/* $WEB/config/
 
 mkdir $WEB/tmp
