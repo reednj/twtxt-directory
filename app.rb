@@ -92,6 +92,10 @@ helpers do
 		halt_with_text 404, 'user not found' if user.nil?
 		return user
 	end
+
+	def get_user!(user_id)
+		User.get_by_id(user_id) || halt_with_text(404, 'user not found')
+	end
 end
 
 get '/' do
@@ -246,11 +250,6 @@ post '/user/add' do
 
 end
 
-get '/t/:username.txt' do  |username|
-	user = user_for_username!(username)
-	text user.posts_to_txt
-end
-
 get '/user/at/:username_or_id' do |username_or_id|
 	username_hint = params[:n]
 
@@ -263,6 +262,11 @@ get '/user/at/:username_or_id' do |username_or_id|
 	
 	halt_with_text 404, 'user not found' if user.nil?
 	redirect to(user.profile_url)
+end
+
+get '/user/:user_id.txt' do  |user_id|
+	user = get_user! user_id
+	text user.posts_to_txt
 end
 
 get '/user/:user_id' do |user_id|
