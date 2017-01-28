@@ -274,7 +274,7 @@ get '/user/:user_id' do |user_id|
 		halt_with_text 500, "could not load user (#{e.message})"
 	end
 
-	if user.needs_update?
+	if !user.local? && user.needs_update?
 		WorkerThread.new.start :timeout => 30.0 do
 			# is it safe to spawn another thread using the same user object?
 			# I have no idea...
@@ -285,9 +285,13 @@ get '/user/:user_id' do |user_id|
 		end
 	end
 
-	data = File.read user.data_path
-	updates = UserHelper.updates_from_data(data)
-
+	if user.local?
+		updates = user.updates
+	else
+		data = File.read user.data_path
+		updates = UserHelper.updates_from_data(data)
+	end
+	
 	erb :user, :layout => :_layout, :locals => {
 		:user => user,
 		:data => updates.first(256)

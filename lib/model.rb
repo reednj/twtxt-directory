@@ -67,6 +67,10 @@ class User < Sequel::Model
 		end
 	end
 
+	def local?
+		!!is_local
+	end
+
 	def short_id
 		user_id[0..16] unless user_id.nil?
 	end
@@ -77,13 +81,14 @@ class User < Sequel::Model
 	end
 
 	def needs_update?
+		return false if local?
 		self.updated_date.nil? || self.updated_date.age > 5.minutes
 	end
 
 	# the actual content of the updates are stored in a file, this will
 	# tell us if it exists
 	def data_exist?
-		File.exist? self.data_path
+		local? || File.exist?(self.data_path)
 	end
 
 	def profile_url
@@ -95,8 +100,11 @@ class User < Sequel::Model
 	end
 
 	def posts_to_txt
-		
 		posts.map {|p| "#{p.date.iso8601}\t#{p.text}"}.join("\n")
+	end
+
+	def updates
+		posts.reverse.map{ |p| p.to_update }
 	end
 end
 
@@ -145,6 +153,10 @@ class Post < Sequel::Model
 
 	def date
 		post_date
+	end
+
+	def to_update
+		TwtxtUpdate.new(text, :date => date)
 	end
 
 	def html(options = nil)

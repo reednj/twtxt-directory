@@ -13,8 +13,8 @@ class TwtxtUpdate
 	attr_accessor :text
 	@max_len = 140
 
-	def initialize(text = nil)
-		self.date = Time.now
+	def initialize(text = nil, options = {})
+		self.date = options[:date] || Time.now
 		self.text = text unless text.nil?
 	end
 

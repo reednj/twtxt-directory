@@ -58,6 +58,7 @@ CREATE TABLE `users` (
   `updated_date` timestamp NULL DEFAULT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_modified_date` timestamp NULL DEFAULT NULL,
+  `is_local` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`user_id`),
   KEY `updated_date` (`updated_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
