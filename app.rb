@@ -31,6 +31,10 @@ set :hidden_users, ['directory', 'soltempore', 'tiktok']
 set :admin_password, ADMIN_PASSWORD
 
 configure :development do
+	set :server, :thin
+	set :bind, "127.0.0.1"
+	set :port, 4567
+
 	also_reload './lib/twtxt.rb'
 	also_reload './lib/model.rb'
 	also_reload './lib/extensions.rb'
@@ -238,13 +242,20 @@ post '/user/add' do
 
 end
 
+get '/user/t/:username.txt' do  |username|
+	user = User.get_by_id username
+	halt_with_text 404, 'user not found' if user.nil?
+
+
+end
+
 get '/user/at/:username_or_id' do |username_or_id|
 	username_hint = params[:n]
 
 	# keep querying with all the information we have until we find something
 	# could do with more efficiently in a single query, but its probably not 
 	# worth it atm
-	user = User.get_by_id username_or_id 
+	user = User.get_by_id username_or_id
 	user = User.where(:username => username_or_id).first if user.nil?
 	user = User.where(:username => username_hint).first if user.nil? && !username_hint.nil?
 	
