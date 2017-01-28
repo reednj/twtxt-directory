@@ -87,6 +87,11 @@ helpers do
 		halt_with_text 500, "invalid format (#{format})" if !format.nil? && format != 'txt'
 	end
 
+	def user_for_username!(username)
+		user = User.where(:username => username).first
+		halt_with_text 404, 'user not found' if user.nil?
+		return user
+	end
 end
 
 get '/' do
@@ -172,25 +177,24 @@ end
 post '/update/add' do
 	admin_only!
 
+	username = 'reednj'
+	user = user_for_username!(username)
 	text = (params[:content] || '').strip
 	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
 
-	# at the moment this can only post as me, with a hardcoded command, but maybe
-	# later I will expand this to add self hosted accounts
-	update = TwtxtUpdate.new(text)
+	begin
+		post = Post.new do |p|
+			p.user_id = user.user_id
+			p.post_text = text
+			p.post_date = Time.now
+		end
 
-	host = 'reednj@reednj.com'
-	path = '~/reednj.com/reednj.twtxt.txt'
-	cmd = "echo #{update.to_s.wrap_in_quotes} >> #{path}"
+		post.post_id = post.to_txt.sha1
+		post.save
 
-	# this will fail if the command contains single quotes, but I don't really care
-	# as it is only being used by me
-	result = `ssh #{host} '#{cmd}' 2>&1`
-	
-	if !result.nil? && !result.empty?
-		redirect to('/update/new?r=' + URI.encode(result))
-	else
 		redirect to('/update/new')
+	rescue => e
+		redirect to('/update/new?r=' + URI.encode(e.to_s))
 	end
 end
 
@@ -243,10 +247,8 @@ post '/user/add' do
 end
 
 get '/t/:username.txt' do  |username|
-	user = User.where(:username => username).first
-	halt_with_text 404, 'user not found' if user.nil?
-
-	return 200, {'Content-type' => 'text/plain'}, user.posts_to_txt
+	user = user_for_username!(username)
+	text user.posts_to_txt
 end
 
 get '/user/at/:username_or_id' do |username_or_id|

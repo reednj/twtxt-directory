@@ -21,7 +21,7 @@ if !DB[:users].columns.include? :last_modified_date
 end
 
 class User < Sequel::Model
-	one_to_many :posts
+	one_to_many :posts, :order => :post_date
 
 	dataset_module do
 		def exist?(id)
@@ -86,6 +86,7 @@ class User < Sequel::Model
 	end
 
 	def posts_to_txt
+		
 		posts.map {|p| "#{p.date.iso8601}\t#{p.text}"}.join("\n")
 	end
 end
@@ -93,6 +94,10 @@ end
 class Post < Sequel::Model
 	many_to_one :user
 	
+	def before_create
+		post_id ||= self.to_txt.sha1
+	end
+
 	dataset_module do
 		def exist?(id)
 			!self[id].nil?
