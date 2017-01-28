@@ -20,6 +20,15 @@ if !DB[:users].columns.include? :last_modified_date
 	end
 end
 
+if !DB[:users].columns.include? :is_local
+	DB.alter_table :users do
+		add_column :is_local, :boolean, {
+			:default => false, 
+			:null => false
+		}
+	end
+end
+
 class User < Sequel::Model
 	one_to_many :posts, :order => :post_date
 
