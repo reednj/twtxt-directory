@@ -242,11 +242,11 @@ post '/user/add' do
 
 end
 
-get '/user/t/:username.txt' do  |username|
-	user = User.get_by_id username
+get '/t/:username.txt' do  |username|
+	user = User.where(:username => username).first
 	halt_with_text 404, 'user not found' if user.nil?
 
-
+	return 200, {'Content-type' => 'text/plain'}, user.posts_to_txt
 end
 
 get '/user/at/:username_or_id' do |username_or_id|
