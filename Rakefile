@@ -16,7 +16,7 @@ namespace 'deploy_to' do
 
     desc "deploy to prod after running tests"
     task :prod => ["github", "remote:version"] do
-        remote = "reednj@reddit-stream.com:code/redditstream.git"
+        remote = "prod"
         sh "git push #{remote} master"
         sh "url-status reddit-stream.com"
     end
