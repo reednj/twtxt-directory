@@ -18,7 +18,7 @@ namespace 'deploy_to' do
     task :prod => ["github", "remote:version"] do
         remote = "prod"
         sh "git push #{remote} master"
-        sh "url-status reddit-stream.com"
+        sh "url-status twtxt.reednj.com"
     end
 end
 
@@ -36,7 +36,7 @@ namespace "app" do
             sh 'touch tmp/restart.txt'
         end
 
-        task 'build' => ['tmp', 'data'] do
+        task 'build' => ['tmp', 'data', 'restart'] do
         end
     end
 end
