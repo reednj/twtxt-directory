@@ -289,16 +289,9 @@ get '/user/:user_id' do |user_id|
 		end
 	end
 
-	if user.local?
-		updates = user.updates
-	else
-		data = File.read user.data_path
-		updates = UserHelper.updates_from_data(data)
-	end
-	
 	erb :user, :layout => :_layout, :locals => {
 		:user => user,
-		:data => updates.first(256)
+		:data => user.updates.first(256)
 	}
 end
 

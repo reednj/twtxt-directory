@@ -30,7 +30,7 @@ if !DB[:users].columns.include? :is_local
 end
 
 class User < Sequel::Model
-	one_to_many :posts, :order => :post_date
+	one_to_many :posts, :order => :post_date, :limit => 256
 
 	dataset_module do
 		def exist?(id)
