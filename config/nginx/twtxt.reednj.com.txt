@@ -9,5 +9,6 @@ server {
 	listen 80;
 	server_name twtxt.reednj.com;
 	passenger_enabled on;
+	passenger_ruby /var/www/twtxt.reednj.com/_ruby;
 	root /var/www/twtxt.reednj.com/public;
 }
