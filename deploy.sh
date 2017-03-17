@@ -1,11 +1,12 @@
 #!/bin/sh
 
-WEB=~/www/twtxt.reednj.com
+WEB=~/twtxt.reednj.com
 SRC=~/code/twtxt.git
 CONFIG=~/code/config_backup/twtxt
 
 # update the data
 mkdir -p $SRC/data
+mkdir -p $WEB/data
 cp $WEB/data/* $SRC/data
 
 # update the data
@@ -17,8 +18,8 @@ cp -R $SRC/* $WEB
 cp $SRC/.ruby-version $WEB
 cp $CONFIG/* $WEB/config/
 
-mkdir $WEB/tmp
-touch $WEB/tmp/restart.txt
+cd $WEB/
+rake app:installed:build
 
 echo "Website deployed"
 
