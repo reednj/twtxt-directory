@@ -1,1 +1,13 @@
-# nginx config
+
+server {
+    listen 80;
+    server_name www.twtxt.reednj.com;
+    return 301 http://twtxt.reednj.com$request_uri;
+}
+
+server {
+	listen 80;
+	server_name twtxt.reednj.com;
+	passenger_enabled on;
+	root /var/www/twtxt.reednj.com/public;
+}
