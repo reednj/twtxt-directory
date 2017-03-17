@@ -273,7 +273,6 @@ get '/user/:user_id' do |user_id|
 	begin
 		user = User.get_by_id user_id
 		halt_with_text 404, 'user not found' if user.nil?
-		halt_with_text 404, 'no data for that user' if !user.data_exist?
 	rescue => e
 		halt_with_text 500, "could not load user (#{e.message})"
 	end
