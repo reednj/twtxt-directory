@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 WEB=~/twtxt.reednj.com
 SRC=~/code/twtxt.git
@@ -18,7 +18,12 @@ cp -R $SRC/* $WEB
 cp $SRC/.ruby-version $WEB
 cp $CONFIG/* $WEB/config/
 
+# load chruby
+source /usr/local/share/chruby/chruby.sh
+source /usr/local/share/chruby/auto.sh
+
 cd $WEB/
+bundle install
 rake app:installed:build
 
 echo "Website deployed"
