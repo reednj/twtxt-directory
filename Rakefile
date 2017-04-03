@@ -11,13 +11,13 @@ task :release => "deploy_to:prod"
 namespace 'deploy_to' do
     desc "deploy to github"
     task :github do
-        sh "git push origin master"
+        sh "git push --follow-tags origin master"
     end
 
     desc "deploy to prod after running tests"
     task :prod => ["github", "remote:version"] do
         remote = "prod"
-        sh "git push #{remote} master"
+        sh "git push --follow-tags #{remote} master"
         sh "url-status twtxt.reednj.com"
     end
 end
