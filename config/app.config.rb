@@ -4,7 +4,8 @@ DB_CONFIG = {
 	:user => 'linkuser',
 	:password => '',
 	:host => '127.0.0.1',
-	:database => 'twtxt'
+	:database => 'twtxt',
+	:encoding => 'utf8mb4'
 }
 
 TWITTER_CONFIG = {

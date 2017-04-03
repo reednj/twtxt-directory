@@ -38,7 +38,7 @@ DROP TABLE IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `post_id` varchar(64) NOT NULL,
   `user_id` varchar(64) NOT NULL,
-  `post_text` varchar(256) NOT NULL,
+  `post_text` varchar(256) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
   `post_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`post_id`),
