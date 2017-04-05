@@ -11,7 +11,7 @@ require_relative './sequel-event-log'
 class TwtxtUpdate
 	attr_accessor :date
 	attr_accessor :text
-	@max_len = 140
+	@max_len = 255
 
 	def initialize(text = nil, options = {})
 		self.date = options[:date] || Time.now
