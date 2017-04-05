@@ -106,6 +106,15 @@ class User < Sequel::Model
 	def updates
 		posts.reverse.map{ |p| p.to_update }
 	end
+
+	def local_update_url
+		"http://twtxt.reednj.com/user/#{short_id}.txt"
+	end
+
+	def update_url
+		return local_update_url if local?
+		values[:update_url]
+	end
 end
 
 class Post < Sequel::Model
