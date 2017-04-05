@@ -28,7 +28,7 @@ class TwtxtUpdate
 			raise 'update is in the future' if update.date > 1.day.from_now
 			raise 'update is too far in the past' if update.date < Time.gm(1984,1,1)
 			
-			update.text = fields[1].force_encoding('utf-8')		
+			update.text = fields[1].force_encoding('utf-8')
 		rescue => e
 			raise "could not parse update (#{e.message})"
 		end
@@ -179,7 +179,7 @@ class UserHelper
 			user.save_changes
 		end
 
-		data = response.to_s
+		data = response.to_s.force_encoding('utf-8')
 		File.write user.data_path, data
 		LoggedEvent.for_event('user_updated', {
 			:user_id => user.short_id, 
