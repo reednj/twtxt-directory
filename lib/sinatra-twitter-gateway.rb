@@ -51,7 +51,7 @@ class TextCache
 end
 
 get '/t/:username/twtxt.txt' do |username|
-	allowed_users = ['reednj']
+	allowed_users = ['reednj', 'reddit_random']
 	halt_with_text 401, 'invalid user' if !allowed_users.include? username
 
 	data_path = "./data/#{username}.twitter.txt"
