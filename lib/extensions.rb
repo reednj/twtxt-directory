@@ -14,7 +14,9 @@ class WorkerThread
 			begin
 				yield
 			rescue => e
-				File.append 'error.log', "#{Time.now.iso8601}\t#{e.class.to_s}\t#{e.message}\n"
+				error_text = "#{Time.now.iso8601}\t#{e.class.to_s}\t#{e.message}\n"
+				File.append 'error.log', error_text
+				puts error_text
 				raise e
 			end
 		end

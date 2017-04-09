@@ -69,6 +69,7 @@ class User < Sequel::Model
 		def active
 			where('last_post_date > ?', 1.day.ago)
 		end
+
 	end
 
 	def local?
@@ -118,6 +119,10 @@ class User < Sequel::Model
 	def update_url
 		return local_update_url if local?
 		values[:update_url]
+	end
+
+	def last_post_in_db
+		Post.where(:user_id => user_id).max(:post_date)
 	end
 end
 

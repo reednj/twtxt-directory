@@ -106,30 +106,21 @@ class UserHelper
 
 	def self.update_user_record(user, data)
 		updates = UserHelper.updates_from_data(data)
-		new_update_count = updates.length - user.update_count 
-
-		user.update_count = updates.length
-		user.updated_date = Time.now
-		user.last_post_date = updates.map { |u| u.date }.max
-		user.save_changes
+		new_update_count = updates.length - user.update_count
+		prev_last_post = user.last_post_in_db || Time.gm(2000, 1, 1)
 
 		if new_update_count > 0 && user.username != 'directory'
 			UpdateHelper.add_update "#{new_update_count} update(s) were added for @#{user.username}"
 		end
 
 		DB.transaction do
-			# in the db we just delete everything, and reinsert the last 100 posts
-			# this is not really the best way to do things, but this simple way will
-			# work better until a faster / more complete way to syncing the data files
-			# to the db is required
-			DB[:posts].where(:user_id => user.user_id).delete()
 
 			#
 			# we generate an array of hashes that can be passed to the mulit_insert
 			# method, which will do a bulk insert to the server, which is important
 			# because there is 18ms latency to the db in our setup 
 			#
-			update_data = updates.first(100).map do |u|
+			update_data = updates.select{ |u| u.date > prev_last_post }.map do |u|
 				id = Post.generate_id "[#{user.user_id}]-[#{u.date}]-[#{u.text}]"
 				
 				h = {
@@ -139,8 +130,13 @@ class UserHelper
 					:post_text => u.text
 				}
 			end
-
+			
 			DB[:posts].multi_insert update_data
+
+			user.update_count = updates.length
+			user.updated_date = Time.now
+			user.last_post_date = updates.map { |u| u.date }.max
+			user.save_changes
 		end
 	end
 
