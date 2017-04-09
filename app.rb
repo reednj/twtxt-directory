@@ -103,7 +103,7 @@ get '/' do
 	# so we will just redirect the root to the new page. Maybe later roll it out to
 	# some other pages
 	if settings.production? && request.host == 'twtxt.reednj.com'
-		return redirect to("twtxt.xyz#{request.path}")
+		return redirect to("http://twtxt.xyz#{request.path}")
 	end
 
 	erb :home, :layout => :_layout, :locals => {
