@@ -271,9 +271,11 @@ get '/user/at/:username_or_id' do |username_or_id|
 	redirect to(user.profile_url)
 end
 
-get '/user/:user_id.txt' do  |user_id|
-	user = get_user! user_id
-	text user.posts_to_txt
+['/user/:user_id.txt', '/u/:user_id.txt'].each do |url|
+	get url do  |user_id|
+		user = User.get_by_id(user_id) || User.get_by_name(user_id) || halt_with_text('user not found')
+		text user.posts_to_txt
+	end
 end
 
 get '/user/:user_id' do |user_id|

@@ -44,6 +44,10 @@ class User < Sequel::Model
 			return users[0]
 		end
 
+		def get_by_name(username)
+			User.where(:username => username).first
+		end
+
 		def get_by_url(url)
 			id = id_for_url(url)
 			User[id]
@@ -108,7 +112,7 @@ class User < Sequel::Model
 	end
 
 	def local_update_url
-		"http://twtxt.reednj.com/user/#{short_id}.txt"
+		"http://twtxt.xyz/u/#{username}.txt"
 	end
 
 	def update_url
@@ -154,6 +158,7 @@ class Post < Sequel::Model
 			return nil if posts.empty?
 			return posts[0]
 		end
+
 	end
 
 	def text
