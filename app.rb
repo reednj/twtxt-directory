@@ -99,6 +99,13 @@ helpers do
 end
 
 get '/' do
+	# dont want a general redirect in nginx, in case some clients don't handle 302's
+	# so we will just redirect the root to the new page. Maybe later roll it out to
+	# some other pages
+	if settings.production? && request.host == 'twtxt.reednj.com'
+		return redirect to("twtxt.xyz#{request.path}")
+	end
+
 	erb :home, :layout => :_layout, :locals => {
 		:users => User.order_by(:username).take(500),
 		:user_count => User.count
