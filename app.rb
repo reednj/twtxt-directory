@@ -274,6 +274,7 @@ end
 ['/user/:user_id.txt', '/u/:user_id.txt'].each do |url|
 	get url do  |user_id|
 		user = User.get_by_id(user_id) || User.get_by_name(user_id) || halt_with_text('user not found')
+		last_modifed user.last_post_data
 		text user.posts_to_txt
 	end
 end
