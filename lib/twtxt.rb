@@ -102,7 +102,7 @@ class UpdateHelper
 end
 
 class UserHelper
-	@user_agent = 'twtxt/1.1 (+http://twtxt.reednj.com/twtxt/directory.twtxt.txt, @directory) twtxt-dir/1.1'
+	@user_agent = 'twtxt/1.1 (+http://twtxt.xyz/u/reednj.txt, @reednj) twtxt.xyz/1.21'
 
 	def self.update_user_record(user, data)
 		updates = UserHelper.updates_from_data(data)
