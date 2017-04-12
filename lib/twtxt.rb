@@ -106,12 +106,7 @@ class UserHelper
 
 	def self.update_user_record(user, data)
 		updates = UserHelper.updates_from_data(data)
-		new_update_count = updates.length - user.update_count
 		prev_last_post = user.last_post_in_db || Time.gm(2000, 1, 1)
-
-		if new_update_count > 0 && user.username != 'directory'
-			UpdateHelper.add_update "#{new_update_count} update(s) were added for @#{user.username}"
-		end
 
 		DB.transaction do
 
