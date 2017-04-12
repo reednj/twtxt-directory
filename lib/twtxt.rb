@@ -147,8 +147,13 @@ class UserHelper
 		user.updated_date = Time.now
 		user.save_changes
 
-		data = update_user_data(user)
-		update_user_record(user, data) unless data.nil?
+		begin
+			data = update_user_data(user)
+			update_user_record(user, data) unless data.nil?
+		rescue => e
+			d = "#{user.username} (#{e})"
+			LoggedEvent.for_event('user_update_failed', :user_id => user.short_id, :description => d).save
+		end
 	end
 
 	def self.update_user_data(user)
