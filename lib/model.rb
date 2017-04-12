@@ -67,7 +67,11 @@ class User < Sequel::Model
 		end
 
 		def active
-			where('last_post_date > ?', 1.day.ago)
+			active_since(1.day.ago)
+		end
+
+		def active_since(since_date)
+			where('last_post_date > ?', since_date)
 		end
 
 	end

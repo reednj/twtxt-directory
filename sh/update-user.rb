@@ -22,7 +22,8 @@ class App
 			sleep 1.0
 		end
 
-		# get the oldest updated user, and update them
+		# get the oldest active user, and update them. This way we update users
+		# who are more active more quickly
 		(0...recent_update_count).each do 
 			self.run_update self.active_user_to_update
 			sleep 1.0
@@ -72,7 +73,7 @@ class App
 	end
 
 	def user_to_update
-		User.where('updated_date < ?', 5.minutes.ago).order_by(:updated_date).first
+		User.active_since(20.weeks.ago).where('updated_date < ?', 5.minutes.ago).order_by(:updated_date).first
 	end
 
 	def active_user_to_update
