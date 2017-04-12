@@ -24,7 +24,7 @@ class TwtxtUpdate
 		raise 'update should have only two fields' if fields.count != 2
 
 		begin
-			update.date = Time.parse(fields[0]).localtime
+			update.date = Time.parse(fields[0]).localtime.round
 			raise 'update is in the future' if update.date > 1.day.from_now
 			raise 'update is too far in the past' if update.date < Time.gm(1984,1,1)
 			
