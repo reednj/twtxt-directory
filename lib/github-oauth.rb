@@ -31,11 +31,23 @@ module GitHub
 				},
 				:accept => 'application/json'
 			)
-
 			
 			result = JSON.parse json_text, :symbolize_names => true
-			self.access_token = result[:access_token]
 			return result
+		end
+
+		def user
+			authenticated!
+			json_text = RestClient.get('https://api.github.com/user',{ 
+				:params => { :access_token => access_token },
+				:accept => 'application/json'
+			})
+			
+			return JSON.parse json_text, :symbolize_names => true
+		end
+
+		def authenticated!
+			raise 'access_token required' if access_token.nil?
 		end
 	end
 end

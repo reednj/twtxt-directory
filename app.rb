@@ -23,6 +23,8 @@ set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
 set :short_version, settings.version.split('-').first
 
+enable :sessions
+
 # when this is true, all sql queries will be dumped to the console, making
 # it easier to debug exactly what the models are doing
 set :log_sql, false
@@ -99,6 +101,8 @@ helpers do
 
 	def github
 		@github ||=  GitHub::OAuth.new(GITHUB_CONFIG)
+		@github.access_token = session[:access_token] unless session[:access_token].nil?
+		@github
 	end
 end
 
@@ -311,8 +315,11 @@ end
 
 get '/oauth/complete' do
 	code = params[:code]
-	github.token_from_code(code)
-	github.access_token
-	
+	token = github.token_from_code(code)
+	session[:access_token] = token[:access_token]
+	session[:github_user] = github.user[:login]
+
+	puts session[:github_user]
+	redirect to('/')
 end
 
