@@ -137,6 +137,10 @@ class User < Sequel::Model
 	def last_post_in_db
 		Post.where(:user_id => user_id).max(:post_date)
 	end
+
+	def db_update_count
+		Post.where(:user_id => user_id).count
+	end
 end
 
 class Post < Sequel::Model

@@ -222,14 +222,21 @@ post '/update/save' do
 	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
 
 	begin
-		post = Post.new do |p|
-			p.user_id = user.user_id
-			p.post_text = text
-			p.post_date = Time.now
-		end
+		DB.transaction do
+			post = Post.new do |p|
+				p.user_id = user.user_id
+				p.post_text = text
+				p.post_date = Time.now
+			end
 
-		post.post_id = post.to_txt.sha1
-		post.save
+			post.post_id = post.to_txt.sha1
+			post.save
+
+			user.last_post_date = post.post_date
+			user.last_modified_date = post.post_date
+			user.update_count = user.db_update_count
+			user.save_changes
+		end
 
 		redirect to('/update/new')
 	rescue => e
