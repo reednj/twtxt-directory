@@ -11,6 +11,10 @@
 <% content_for :body do %>
 
 <div class='section'>
+	<% if authenticated? %>
+		[<a href='/update/new'>new post</a>]
+	<% end %>
+
 	<% if timeline_type == :all %>
 		showing updates from all users
 	<% elsif timeline_type == :replies %>
