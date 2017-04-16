@@ -350,15 +350,22 @@ get '/oauth/complete' do
 	local_user = User.where(:github_user => session[:github_user]).first
 	
 	if local_user.nil?
-		local_user = User.new do |u|
-			u.username = session[:github_user]
-			u.github_user = session[:github_user]
-			u.user_id = User.id_for_url(u.local_update_url)
-			u.update_url = u.local_update_url
-			u.is_local = true
+		begin
+			local_user = User.new do |u|
+				u.username = session[:github_user]
+				u.github_user = session[:github_user]
+				u.user_id = User.id_for_url(u.local_update_url)
+				u.update_url = u.local_update_url
+				u.is_local = true
+			end
+			
+			local_user.save
+		rescue Sequel::UniqueConstraintViolation
+			error_message = "Error: that username is already taken (#{session[:github_user]})"
+			return redirect to('/?user_add_error=' + URI.encode(error_message))
+		rescue => e
+			return redirect to('/?user_add_error=' + URI.encode(e.to_s))
 		end
-		
-		local_user.save
 	end
 	
 	session[:user_id] = local_user.user_id
