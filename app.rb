@@ -11,10 +11,12 @@ require "sinatra/reloader" if development?
 require './lib/model'
 require './lib/twtxt'
 require './lib/extensions'
+
 require './lib/sinatra-schema-backup'
 require './lib/sinatra-basic-auth'
-
 require './lib/sinatra-twitter-gateway'
+
+require './lib/github-oauth'
 
 use Rack::Deflater
 set :erb, :escape_html => true
@@ -35,9 +37,7 @@ configure :development do
 	set :bind, "127.0.0.1"
 	set :port, 4567
 
-	also_reload './lib/twtxt.rb'
-	also_reload './lib/model.rb'
-	also_reload './lib/extensions.rb'
+	Dir["./lib/*.rb"].each {|f| also_reload f }
 
 	if settings.log_sql
 		DB.logger =  Logger.new(STDOUT)
@@ -95,6 +95,10 @@ helpers do
 
 	def get_user!(user_id)
 		User.get_by_id(user_id) || halt_with_text(404, 'user not found')
+	end
+
+	def github
+		@github ||=  GitHub::OAuth.new(GITHUB_CONFIG)
 	end
 end
 
@@ -305,4 +309,10 @@ get '/user/:user_id' do |user_id|
 	}
 end
 
+get '/oauth/complete' do
+	code = params[:code]
+	github.token_from_code(code)
+	github.access_token
+	
+end
 
