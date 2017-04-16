@@ -11,5 +11,4 @@ gem 'sinatra-contrib'
 gem 'rest-client'
 gem 'erubis'
 gem 'twitter'
-gem 'rest-client'
 
