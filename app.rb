@@ -216,7 +216,7 @@ get '/update/new' do
 	}
 end
 
-post '/update/add' do
+post '/update/save' do
 	user = current_user!
 	text = (params[:content] || '').strip
 	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
