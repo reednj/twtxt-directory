@@ -210,6 +210,7 @@ get '/update/new' do
 	erb :create_post, :layout => :_layout, :locals => {
 		:username => user.username,
 		:result => params[:r] || nil,
+		:post_hint => params[:hint] || '',
 		:js => {
 			:update_length => 255
 		}

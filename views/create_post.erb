@@ -27,7 +27,7 @@
 
 <form action='/update/save' method='post'>
 	<div>
-		<textarea name='content' id='js-update-content' class='update-content'></textarea>
+		<textarea name='content' id='js-update-content' class='update-content'><%= post_hint %></textarea>
 		
 		<% if !result.nil? && !result.empty? %>
 			<div class='error-message'><%= result %></div>
