@@ -61,7 +61,7 @@
 	<% if user.nil? %>
 		<a href='<%= github.authorize_url %>'>Login with GitHub</a>
 	<% else %>
-		<a href='<%= user.profile_url %>'>@<%= user.username %></a>
+		<a href='<%= user.profile_url %>' style='color: #b58900'>@<%= user.username %></a>
 	<% end %>
 	
 	| <a href='/timeline/all'>/timeline</a>	
