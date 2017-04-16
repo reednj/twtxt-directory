@@ -11,15 +11,22 @@ require "sinatra/reloader" if development?
 require './lib/model'
 require './lib/twtxt'
 require './lib/extensions'
+
 require './lib/sinatra-schema-backup'
 require './lib/sinatra-basic-auth'
-
 require './lib/sinatra-twitter-gateway'
+
+require './lib/github-oauth'
 
 use Rack::Deflater
 set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
 set :short_version, settings.version.split('-').first
+
+use Rack::Session::Cookie, 
+	:key => 'rack.session',
+	:expire_after => 90.days,
+	:secret => GITHUB_CONFIG[:client_secret] + '.reednj'	
 
 # when this is true, all sql queries will be dumped to the console, making
 # it easier to debug exactly what the models are doing
@@ -35,9 +42,7 @@ configure :development do
 	set :bind, "127.0.0.1"
 	set :port, 4567
 
-	also_reload './lib/twtxt.rb'
-	also_reload './lib/model.rb'
-	also_reload './lib/extensions.rb'
+	Dir["./lib/*.rb"].each {|f| also_reload f }
 
 	if settings.log_sql
 		DB.logger =  Logger.new(STDOUT)
@@ -96,6 +101,31 @@ helpers do
 	def get_user!(user_id)
 		User.get_by_id(user_id) || halt_with_text(404, 'user not found')
 	end
+
+	def github
+		@github ||=  GitHub::OAuth.new(GITHUB_CONFIG)
+		@github.access_token = session[:access_token] unless session[:access_token].nil?
+		@github
+	end
+
+	def authenticated?
+		!session[:user_id].nil?
+	end
+
+	def authenticated!
+		halt_with_text 401, 'login required' unless authenticated?
+	end
+
+	def current_user
+		return nil unless authenticated?
+		user_id = session[:user_id]
+		User[user_id]
+	end
+
+	def current_user!
+		authenticated!
+		current_user || halt_with_text(404, 'user not found')
+	end
 end
 
 get '/' do
@@ -107,6 +137,7 @@ get '/' do
 	end
 
 	erb :home, :layout => :_layout, :locals => {
+		:user => current_user,
 		:users => User.order_by(:username).take(500),
 		:user_count => User.count
 	}
@@ -174,34 +205,39 @@ get '/user/:username/replies.?:format?' do |username, format|
 end
 
 get '/update/new' do
-	admin_only!
+	user = current_user!
 
 	erb :create_post, :layout => :_layout, :locals => {
-		:username => 'reednj',
+		:username => user.username,
 		:result => params[:r] || nil,
+		:post_hint => params[:hint] || '',
 		:js => {
-			:update_length => 140
+			:update_length => 255
 		}
 	}
 end
 
-post '/update/add' do
-	admin_only!
-
-	username = 'reednj'
-	user = user_for_username!(username)
+post '/update/save' do
+	user = current_user!
 	text = (params[:content] || '').strip
 	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
 
 	begin
-		post = Post.new do |p|
-			p.user_id = user.user_id
-			p.post_text = text
-			p.post_date = Time.now
-		end
+		DB.transaction do
+			post = Post.new do |p|
+				p.user_id = user.user_id
+				p.post_text = text
+				p.post_date = Time.now
+			end
 
-		post.post_id = post.to_txt.sha1
-		post.save
+			post.post_id = post.to_txt.sha1
+			post.save
+
+			user.last_post_date = post.post_date
+			user.last_modified_date = post.post_date
+			user.update_count = user.db_update_count
+			user.save_changes
+		end
 
 		redirect to('/update/new')
 	rescue => e
@@ -305,4 +341,38 @@ get '/user/:user_id' do |user_id|
 	}
 end
 
+get '/oauth/complete' do
+	code = params[:code]
+	token = github.token_from_code(code)
+	session[:access_token] = token[:access_token]
+	session[:github_user] = github.user[:login]
 
+	local_user = User.where(:github_user => session[:github_user]).first
+	
+	if local_user.nil?
+		begin
+			local_user = User.new do |u|
+				u.username = session[:github_user]
+				u.github_user = session[:github_user]
+				u.user_id = User.id_for_url(u.local_update_url)
+				u.update_url = u.local_update_url
+				u.is_local = true
+			end
+			
+			local_user.save
+		rescue Sequel::UniqueConstraintViolation
+			error_message = "Error: that username is already taken (#{session[:github_user]})"
+			return redirect to('/?user_add_error=' + URI.encode(error_message))
+		rescue => e
+			return redirect to('/?user_add_error=' + URI.encode(e.to_s))
+		end
+	end
+	
+	session[:user_id] = local_user.user_id
+	redirect to('/')
+end
+
+get '/oauth/logout' do
+	session.clear
+	redirect to('/')
+end

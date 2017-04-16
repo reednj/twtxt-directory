@@ -53,13 +53,18 @@
 		<input type="submit" value='Add User' />
 	</form>
 
-	<div id='user-add-error' class='error-message' style='display:none'>
-	</div>
+	<div id='user-add-error' class='error-message'><%= params[:user_add_error] %></div>
 </div>
 
 <div class="section">
-	<a href='/user/at/directory'>@directory</a> | 
-	<a href='/timeline/all'>/timeline</a>
+	<% if user.nil? %>
+		<a href='<%= github.authorize_url %>' style='color: #b58900'>Login with GitHub</a>
+	<% else %>
+		<a href='<%= user.profile_url %>' style='color: #b58900'>@<%= user.username %></a>
+		| <a href='/update/new'>new post</a>
+	<% end %>
+	
+	| <a href='/timeline/all'>/timeline</a>
 
 	<div style='float:right;'>[<%= user_count %> users]</div>
 </div>

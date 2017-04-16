@@ -29,6 +29,15 @@ if !DB[:users].columns.include? :is_local
 	end
 end
 
+if !DB[:users].columns.include? :github_user
+	DB.alter_table :users do
+		add_column :github_user, :varchar, {
+			:size => 64,
+			:null => true
+		}
+	end
+end
+
 class User < Sequel::Model
 	one_to_many :posts, :order => :post_date, :limit => 256
 
@@ -127,6 +136,10 @@ class User < Sequel::Model
 
 	def last_post_in_db
 		Post.where(:user_id => user_id).max(:post_date)
+	end
+
+	def db_update_count
+		Post.where(:user_id => user_id).count
 	end
 end
 
