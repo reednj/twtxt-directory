@@ -29,6 +29,15 @@ if !DB[:users].columns.include? :is_local
 	end
 end
 
+if !DB[:users].columns.include? :github_user
+	DB.alter_table :users do
+		add_column :github_user, :varchar, {
+			:size => 64,
+			:null => true
+		}
+	end
+end
+
 class User < Sequel::Model
 	one_to_many :posts, :order => :post_date, :limit => 256
 

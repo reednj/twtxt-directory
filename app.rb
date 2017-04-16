@@ -104,6 +104,25 @@ helpers do
 		@github.access_token = session[:access_token] unless session[:access_token].nil?
 		@github
 	end
+
+	def authenticated?
+		!session[:user_id].nil?
+	end
+
+	def authenticated!
+		halt_with_text 401, 'login required' unless authenticated?
+	end
+
+	def current_user
+		return nil unless authenticated?
+		user_id = session[:user_id]
+		User[user_id]
+	end
+
+	def current_user!
+		authenticated!
+		current_user || halt_with_text(404, 'user not found')
+	end
 end
 
 get '/' do
@@ -115,6 +134,7 @@ get '/' do
 	end
 
 	erb :home, :layout => :_layout, :locals => {
+		:user => current_user,
 		:users => User.order_by(:username).take(500),
 		:user_count => User.count
 	}
@@ -319,7 +339,10 @@ get '/oauth/complete' do
 	session[:access_token] = token[:access_token]
 	session[:github_user] = github.user[:login]
 
-	puts session[:github_user]
+	local_user = User.where(:github_user => session[:github_user]).first
+	halt_with_text 404, "user not found (github_user: #{session[:github_user]})" if local_user.nil?
+	session[:user_id] = local_user.user_id
+
 	redirect to('/')
 end
 
