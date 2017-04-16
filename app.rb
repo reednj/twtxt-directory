@@ -340,9 +340,20 @@ get '/oauth/complete' do
 	session[:github_user] = github.user[:login]
 
 	local_user = User.where(:github_user => session[:github_user]).first
-	halt_with_text 404, "user not found (github_user: #{session[:github_user]})" if local_user.nil?
+	
+	if local_user.nil?
+		local_user = User.new do |u|
+			u.username = session[:github_user]
+			u.github_user = session[:github_user]
+			u.user_id = User.id_for_url(u.local_update_url)
+			u.update_url = u.local_update_url
+			u.is_local = true
+		end
+		
+		local_user.save
+	end
+	
 	session[:user_id] = local_user.user_id
-
 	redirect to('/')
 end
 
