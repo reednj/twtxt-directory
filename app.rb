@@ -349,3 +349,7 @@ get '/oauth/complete' do
 	redirect to('/')
 end
 
+get '/oauth/logout' do
+	session.clear
+	redirect to('/')
+end
