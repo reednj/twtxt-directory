@@ -205,22 +205,19 @@ get '/user/:username/replies.?:format?' do |username, format|
 end
 
 get '/update/new' do
-	admin_only!
+	user = current_user!
 
 	erb :create_post, :layout => :_layout, :locals => {
-		:username => 'reednj',
+		:username => user.username,
 		:result => params[:r] || nil,
 		:js => {
-			:update_length => 140
+			:update_length => 255
 		}
 	}
 end
 
 post '/update/add' do
-	admin_only!
-
-	username = 'reednj'
-	user = user_for_username!(username)
+	user = current_user!
 	text = (params[:content] || '').strip
 	halt_with_text 500, 'update text requried' if text.nil? || text.empty?
 
