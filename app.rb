@@ -23,7 +23,10 @@ set :erb, :escape_html => true
 set :version, GitVersion.current('/home/reednj/code/twtxt.git/.git')
 set :short_version, settings.version.split('-').first
 
-enable :sessions
+use Rack::Session::Cookie, 
+	:key => 'rack.session',
+	:expire_after => 90.days,
+	:secret => GITHUB_CONFIG[:client_secret] + '.reednj'	
 
 # when this is true, all sql queries will be dumped to the console, making
 # it easier to debug exactly what the models are doing
