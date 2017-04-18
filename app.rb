@@ -138,7 +138,7 @@ get '/' do
 
 	erb :home, :layout => :_layout, :locals => {
 		:user => current_user,
-		:users => User.order_by(:username).take(500),
+		:users => User.order_by(:username).take(500).select{|u| !u.username.start_with? '.'},
 		:user_count => User.count
 	}
 end
