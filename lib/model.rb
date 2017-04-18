@@ -39,7 +39,9 @@ if !DB[:users].columns.include? :github_user
 end
 
 class User < Sequel::Model
-	one_to_many :posts, :order => :post_date, :limit => 256
+	one_to_many :posts do |ds|
+		ds.reverse_order(:post_date).limit(256)
+	end
 
 	dataset_module do
 		def exist?(id)
@@ -122,7 +124,7 @@ class User < Sequel::Model
 	end
 
 	def updates
-		posts.reverse.map{ |p| p.to_update }
+		posts.map{ |p| p.to_update }
 	end
 
 	def local_update_url
