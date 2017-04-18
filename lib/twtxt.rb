@@ -128,7 +128,7 @@ class UserHelper
 			
 			DB[:posts].multi_insert update_data
 
-			user.update_count = updates.length
+			user.update_count = user.db_update_count
 			user.updated_date = Time.now
 			user.last_post_date = updates.map { |u| u.date }.max
 			user.save_changes
