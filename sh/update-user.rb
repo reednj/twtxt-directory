@@ -29,6 +29,9 @@ class App
 			sleep 1.0
 		end
 
+		# delete old users that have no updates
+		delete_if_old
+
 	end
 
 	def update_single_user(user_id)
@@ -46,18 +49,17 @@ class App
 
 		update_user user
 		puts "@#{user.username} updated"
-		delete_if_old user
-
 		return user
 	end
 
-	def delete_if_old(user)
+	def delete_if_old
 		# now we refresh the data in the user, and check if they have any updates
 		# users that still have no updates 3 days after they were created get deleted
-		user.refresh
-		if user.update_count == 0 && user.created_date.age > 3.days
-			user.delete
-			puts "@#{user.username} deleted - no updates for 3 days"
+		User.where(:update_count => 0).all.each do |u|
+			if u.created_date.age > 30.days
+				puts "@#{u.username} deleted"
+				u.delete
+			end
 		end
 	end
 
