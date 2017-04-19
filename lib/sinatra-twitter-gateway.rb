@@ -1,6 +1,7 @@
 
 require 'twitter'
 require 'yaml'
+require 'cgi'
 require './lib/extensions'
 require './config/app.config'
 
@@ -60,7 +61,7 @@ get '/t/:username/twtxt.txt' do |username|
 		updates = timeline.map do |t|
 			u = TwtxtUpdate.new
 			u.date = t.created_at.dup
-			u.text = t.text
+			u.text = CGI.unescapeHTML(t.text)
 			u
 		end
 
