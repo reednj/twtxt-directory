@@ -306,6 +306,7 @@ post '/profile/update' do
 	begin
 		username = params[:username].strip
 		raise 'invalid username' unless valid_username?(username)
+		raise 'username is already taken' unless User.get_by_name(username).nil?
 		user.username = username
 		user.save_changes
 	rescue => e
