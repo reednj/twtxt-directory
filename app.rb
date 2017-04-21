@@ -303,7 +303,7 @@ end
 
 ['/user/:user_id.txt', '/u/:user_id.txt'].each do |url|
 	get url do  |user_id|
-		user = User.get_by_id(user_id) || User.get_by_name(user_id) || halt_with_text('user not found')
+		user = User.get_by_id(user_id) || User.get_by_name(user_id) || not_found('user not found')
 		last_modified user.last_post_date
 		etag user.last_post_date.to_i.to_s
 		text user.posts_to_txt

@@ -134,7 +134,7 @@ class User < Sequel::Model
 	end
 
 	def posts_to_txt
-		posts.map {|p| "#{p.date.iso8601}\t#{p.text}"}.join("\n")
+		posts.map {|p| "#{p.date.utc.iso8601}\t#{p.text}"}.join("\n")
 	end
 
 	def updates
