@@ -126,6 +126,10 @@ helpers do
 		authenticated!
 		current_user || halt_with_text(404, 'user not found')
 	end
+
+	def html_user_actions(user)
+		erb :_user_actions, :locals => {:user => user}
+	end
 end
 
 get '/' do

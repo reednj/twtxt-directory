@@ -8,7 +8,9 @@
 
 <% content_for :body do %>
 
-<div class='section'>@<%= user.username %></div>
+<div class='section'>
+	<%== html_user_actions user %>
+</div>
 
 <form action='/profile/update' method='post'>
 	<div>

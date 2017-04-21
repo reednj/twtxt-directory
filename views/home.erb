@@ -60,9 +60,7 @@
 	<% if user.nil? %>
 		<a href='<%= github.authorize_url %>' style='color: #b58900'>Login with GitHub</a>
 	<% else %>
-		<a href='<%= user.profile_url %>' style='color: #b58900'>@<%= user.username %></a>
-		<a href='<%= user.replies_url %>' class='count-label' href=''><%= user.replies.count %></a>
-		[<a href='/update/new'>new post</a> <a href='/oauth/logout'>logout</a>]
+		<%== html_user_actions user %>
 	<% end %>
 	
 	| <a href='/timeline/all'>/timeline</a>
