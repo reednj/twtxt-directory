@@ -135,7 +135,7 @@ class User < Sequel::Model
 	end
 
 	def posts_to_txt
-		posts.map {|p| "#{p.date.utc.iso8601}\t#{p.text}"}.join("\n")
+		posts.reverse.map {|p| "#{p.date.utc.iso8601}\t#{p.text}"}.join("\n")
 	end
 
 	def metadata
