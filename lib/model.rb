@@ -151,7 +151,7 @@ class User < Sequel::Model
 	end
 
 	def local_update_url
-		"http://twtxt.xyz/u/#{username}.txt"
+		"http://twtxt.xyz/u/#{github_user || username}.txt"
 	end
 
 	def update_url
