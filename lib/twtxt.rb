@@ -176,7 +176,7 @@ class UserHelper
 		end
 
 		data = response.to_s.force_encoding('utf-8')
-		File.write user.data_path, data
+		
 		LoggedEvent.for_event('user_updated', {
 			:user_id => user.short_id, 
 			:description => "#{user.username}, #{data.length} bytes"
