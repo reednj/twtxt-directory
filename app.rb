@@ -370,10 +370,12 @@ get '/oauth/complete' do
 	session[:access_token] = token[:access_token]
 	session[:github_user] = github.user[:login]
 
+	is_new_user = false
 	local_user = User.where(:github_user => session[:github_user]).first
 	
 	if local_user.nil?
 		begin
+			is_new_user = true
 			local_user = User.new do |u|
 				u.username = session[:github_user]
 				u.github_user = session[:github_user]
@@ -392,7 +394,7 @@ get '/oauth/complete' do
 	end
 	
 	session[:user_id] = local_user.user_id
-	redirect to('/')
+	redirect to(is_new_user ? '/profile/update' : '/')
 end
 
 get '/oauth/logout' do
