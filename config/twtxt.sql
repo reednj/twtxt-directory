@@ -61,6 +61,7 @@ CREATE TABLE `users` (
   `is_local` tinyint(1) DEFAULT '0',
   `github_user` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
+  UNIQUE KEY `github_user` (`github_user`),
   KEY `updated_date` (`updated_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

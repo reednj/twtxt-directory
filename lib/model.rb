@@ -33,7 +33,8 @@ if !DB[:users].columns.include? :github_user
 	DB.alter_table :users do
 		add_column :github_user, :varchar, {
 			:size => 64,
-			:null => true
+			:null => true,
+			:unique => true
 		}
 	end
 end
