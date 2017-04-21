@@ -56,7 +56,7 @@ class App
 		# now we refresh the data in the user, and check if they have any updates
 		# users that still have no updates 3 days after they were created get deleted
 		User.where(:update_count => 0).all.each do |u|
-			if u.created_date.age > 30.days
+			if u.created_date.age > 30.days && !u.local?
 				puts "@#{u.username} deleted"
 				u.delete
 			end
