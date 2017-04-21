@@ -127,9 +127,6 @@ td.numeric {
 	margin-bottom: 4px;
 }
 
-.update .content {
-}
-
 .command {
 	padding: 8px;
 	background-color: black;
@@ -139,6 +136,18 @@ input#user-username {
 	width: 150px;
 }
 
+.count-label {
+	background-color: #268bd2;
+	color: black; 
+	display: inline-block; 
+	padding: 1px 4px; 
+	border-radius: 3px; 
+	font-weight: bold;
+}
+
+a.count-label {
+		text-decoration: none;
+}
 
 #user-add-error {
 	padding-top: 8px;

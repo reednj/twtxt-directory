@@ -180,14 +180,8 @@ end
 get '/user/:username/replies.?:format?' do |username, format|
 	validate_format! format
 
-	simple_query = "%@#{username}%"
-	long_query = "%@<#{username} %"
-
-	posts = Post.eager(:user).
-		where(Sequel.like(:post_text, simple_query)).
-		or(Sequel.like(:post_text, long_query)).
-		reverse_order(:post_date).
-		limit(256).all
+	user = User.get_by_name(username) || not_found('user not found')
+	posts = user.replies.limit(256).all
 
 	posts.select! do |p|
 		!(p.user.nil? || settings.hidden_users.include?(p.user.username)) && p.text =~ /(@|@<)#{username}\W/

@@ -84,9 +84,19 @@ class User < Sequel::Model
 		def active_since(since_date)
 			where('last_post_date > ?', since_date)
 		end
-
 	end
 
+
+	def replies
+		simple_query = "%@#{username}%"
+		long_query = "%@<#{username} %"
+
+		@replies ||= Post.eager(:user).
+			where(Sequel.like(:post_text, simple_query)).
+			or(Sequel.like(:post_text, long_query)).
+			reverse_order(:post_date)
+	end
+	
 	def local?
 		!!is_local
 	end
@@ -113,6 +123,10 @@ class User < Sequel::Model
 
 	def profile_url
 		"/user/#{user_id[0...16]}"
+	end
+
+	def replies_url
+		"/user/#{username}/replies"
 	end
 
 	def to_txt
