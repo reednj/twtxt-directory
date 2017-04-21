@@ -1,0 +1,12 @@
+#
+# twtxt is an open, distributed microblogging platform
+#
+# == Metadata ==
+#
+<% user.metadata.each do |k, v| %>
+# <%= k %> = <%== v %>
+<% end %>
+#
+# == Content ==
+#
+<%== user.posts_to_txt %>

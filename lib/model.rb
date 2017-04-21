@@ -137,6 +137,14 @@ class User < Sequel::Model
 		posts.map {|p| "#{p.date.utc.iso8601}\t#{p.text}"}.join("\n")
 	end
 
+	def metadata
+		{
+			:nick => username, 
+			:url => update_url, 
+			:user_agent => 'twtxt.xyz (+http://twtxt.xyz)'
+		}
+	end
+
 	def updates
 		posts.map{ |p| p.to_update }
 	end
