@@ -287,6 +287,30 @@ post '/user/add' do
 
 end
 
+get '/profile/update' do
+	user = current_user!
+
+	erb :edit_profile, :layout => :_layout, :locals => {
+		:user => user,
+		:result => params[:result]
+	}
+end
+
+post '/profile/update' do
+	user = current_user!
+
+	begin
+		username = params[:username].strip
+		raise 'invalid username' unless valid_username?(username)
+		user.username = username
+		user.save_changes
+	rescue => e
+		redirect to('/profile/update?result=' + URI.encode(e.to_s))
+	end
+
+	redirect to('/')
+end
+
 get '/user/at/:username_or_id' do |username_or_id|
 	username_hint = params[:n]
 

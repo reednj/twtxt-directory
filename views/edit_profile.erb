@@ -1,0 +1,25 @@
+<% content_for :title do %>
+	twtxt-dir - change your username
+<% end %>
+
+<% content_for :header do %>
+
+<% end %>
+
+<% content_for :body do %>
+
+<div class='section'>@<%= user.username %></div>
+
+<form action='/profile/update' method='post'>
+	<div>
+		pick a username:
+		@<input type='text' name='username' value='<%= user.username %>'></input>
+		<input type='submit' value='save'>
+
+		<% if !result.nil? && !result.empty? %>
+			<div class='error-message'><%= result %></div>
+		<% end %>
+	</div>
+</form>
+
+<% end %>
