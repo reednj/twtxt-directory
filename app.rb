@@ -33,7 +33,7 @@ use Rack::Session::Cookie,
 set :log_sql, false
 
 # these users will be hidden from the timeline, and from the user replies page
-set :hidden_users, ['directory', 'soltempore', 'tiktok', 'reddit_random', 'hacker_news']
+set :hidden_users, ['directory', 'soltempore', 'tiktok', 'reddit_random', 'hacker_news', 'ekch', 'caudasol']
 
 set :admin_password, ADMIN_PASSWORD
 
