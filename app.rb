@@ -133,6 +133,10 @@ helpers do
 	end
 end
 
+before '/admin/*' do
+	admin_only!
+end
+
 get '/' do
 	# dont want a general redirect in nginx, in case some clients don't handle 302's
 	# so we will just redirect the root to the new page. Maybe later roll it out to
