@@ -7,6 +7,7 @@ require 'json'
 require 'erubis'
 
 require "sinatra/reloader" if development?
+require 'sinatra/error_log'
 
 require './lib/model'
 require './lib/twtxt'
