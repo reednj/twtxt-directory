@@ -84,6 +84,12 @@ class TwtxtUpdate
 			h.gsub! url.escape_html, "<a class='auto-link' href='#{url}'>#{url.escape_html}</a>"
 		end
 
+		# convert all the urls from relative to absolute, if the user
+		# has provided a root url for this
+		if !options[:root_url].nil?
+			h.gsub! "href='/", "href='#{options[:root_url]}"
+		end
+
 		h
 	end
 

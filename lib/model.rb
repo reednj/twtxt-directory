@@ -227,7 +227,7 @@ class Post < Sequel::Model
 	def to_json_feed
 		{
 			:id => post_id,
-			:context_text => post_text,
+			:context_html => html(:root_url => 'http://twtxt.xyz/'),
 			:url => "http://twtxt.xyz#{post_url}"
 		}
 	end
