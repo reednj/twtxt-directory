@@ -122,8 +122,24 @@ end
 class UserHelper
 	@user_agent = 'twtxt/1.1 (+http://twtxt.xyz/u/reednj.txt, @reednj) twtxt.xyz/1.21'
 
+	def self.extract_feed_metadata(data)
+		begin
+			a = data.split("\n").
+				map{|l| l.strip }.
+				select {|l| l.start_with?('#') && l.include?('=')}.
+				map {|l| l[1..-1] }.
+				map { |l| l.split('=')[0..1].map{|w| w.strip }}.
+				select {|k| k[0] != "" && k[1] != "" }
+
+			return Hash[a]
+		rescue => e
+			$stderr.puts e.to_s
+		end
+	end
+
 	def self.update_user_record(user, data)
-		updates = UserHelper.updates_from_data(data)
+		updates = UserHelper.updates_from_data data
+		feed_attr = UserHelper.extract_feed_metadata data
 		prev_last_post = user.last_post_in_db || Time.gm(2000, 1, 1)
 
 		DB.transaction do
@@ -143,12 +159,13 @@ class UserHelper
 					:post_text => u.text
 				}
 			end
-			
+
 			DB[:posts].multi_insert update_data
 
 			user.update_count = user.db_update_count
 			user.updated_date = Time.now
 			user.last_post_date = updates.map { |u| u.date }.max
+			user.feed_attr = feed_attr
 			user.save_changes
 		end
 	end
@@ -161,20 +178,21 @@ class UserHelper
 		user.save_changes
 
 		begin
-			data = update_user_data(user)
+			data = update_user_data(user, :no_cache => true)
 			update_user_record(user, data) unless data.nil?
 		rescue => e
 			d = "#{user.username} (#{e})"
+			$stderr.puts d
 			LoggedEvent.for_event('user_update_failed', :user_id => user.short_id, :description => d).save
 		end
 	end
 
-	def self.update_user_data(user)
+	def self.update_user_data(user, options={})
 		response = RestClient.head(user.update_url)
 		_check_update_headers! response.headers
 
 		headers = { :user_agent => @user_agent }
-		if !user.last_modified_date.nil?
+		if !user.last_modified_date.nil? && options[:no_cache] != true
 			headers[:'If-Modified-Since'] = user.last_modified_date.httpdate 
 		end
 
@@ -222,7 +240,7 @@ class UserHelper
 	def self.updates_from_data(data)
 		lines = data.split("\n")
 	
-		updates = lines.map do |d| 
+		updates = lines.select{|l| !l.start_with? '#'}.map do |d| 
 			begin
 				TwtxtUpdate.from_s d 
 			rescue => e

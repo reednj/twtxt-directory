@@ -60,6 +60,7 @@ CREATE TABLE `users` (
   `last_modified_date` timestamp NULL DEFAULT NULL,
   `is_local` tinyint(1) DEFAULT '0',
   `github_user` varchar(64) DEFAULT NULL,
+  `feed_attr` text,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `github_user` (`github_user`),
   KEY `updated_date` (`updated_date`)

@@ -1,8 +1,11 @@
 require 'sequel'
+require 'json'
 require_relative '../config/app.config'
 
 DB = Sequel.connect DB_CONFIG
 PK_KEY_SALT = 'reednj.key.8Khg8Nh9UKyDadwK'
+
+require './lib/migrations'
 
 class Sequel::Model
 	def to_json(args)
@@ -10,38 +13,14 @@ class Sequel::Model
 	end
 end
 
-if !DB[:users].columns.include? :last_modified_date
-	# this column stores the last modifed date sent from the server to be used for
-	# caching. You would expect that the If-Modifed-since header would use a less-then
-	# comparision, so we could just use the mtime on the file of something, but thats not
-	# the case - most servers do an exact match, treating the modifed date like an etag
-	DB.alter_table :users do
-		add_column :last_modified_date, :timestamp, :default => nil, :null => true
-	end
-end
-
-if !DB[:users].columns.include? :is_local
-	DB.alter_table :users do
-		add_column :is_local, :boolean, {
-			:default => false, 
-			:null => false
-		}
-	end
-end
-
-if !DB[:users].columns.include? :github_user
-	DB.alter_table :users do
-		add_column :github_user, :varchar, {
-			:size => 64,
-			:null => true,
-			:unique => true
-		}
-	end
-end
-
 class User < Sequel::Model
 	one_to_many :posts do |ds|
 		ds.reverse_order(:post_date).limit(256)
+	end
+
+	def before_save
+		super
+		self.feed_attr_raw = feed_attr.to_json
 	end
 
 	dataset_module do
@@ -86,7 +65,6 @@ class User < Sequel::Model
 			where('last_post_date > ?', since_date)
 		end
 	end
-
 
 	def replies
 		simple_query = "%@#{username}%"
@@ -166,6 +144,35 @@ class User < Sequel::Model
 	def db_update_count
 		Post.where(:user_id => user_id).count
 	end
+
+	def feed_attr_raw
+		values[:feed_attr]
+	end
+
+	def feed_attr_raw=(v)
+		modified! :feed_attr
+		@feed_attr = nil
+		values[:feed_attr] = v
+	end
+
+	def feed_attr=(v)
+		self.feed_attr_raw = v.to_json
+	end
+
+	def feed_attr
+		modified! :feed_attr
+
+		if @feed_attr.nil?
+			begin
+				@feed_attr = JSON.parse(feed_attr_raw || '{}', :symbolize_names => true)
+			rescue
+				@feed_attr = {}
+			end
+		end
+
+		return @feed_attr
+	end
+
 end
 
 class Post < Sequel::Model
