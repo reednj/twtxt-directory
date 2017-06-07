@@ -345,6 +345,23 @@ end
 	end
 end
 
+['/user/:user_id.json', '/u/:user_id.json'].each do |url|
+	get url do  |user_id|
+		user = User.get_by_id(user_id) || User.get_by_name(user_id) || not_found('user not found')
+		last_modified user.last_post_date
+		etag user.last_post_date.to_i.to_s
+		
+		json({ 
+			:version => user.username,
+			:title => "twtxt.xyz / @#{user.username}",
+			:home_page_url => "http://twtxt.xyz/#{user.profile_url}",
+			:feed_url => "http://twtxt.xyz/#{user.profile_url}.json",
+			:items => user.posts.map {|p| p.to_json_feed }
+		})
+	end
+end
+
+
 get '/user/:user_id' do |user_id|
 	begin
 		user = User.get_by_id user_id

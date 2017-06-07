@@ -1,3 +1,7 @@
+// this is what a github user looks like
+// to get this for the current user call
+// https://api.github.com/user'
+// after authenticating
 {
     login: "reednj",
     id: 17166,

@@ -220,6 +220,14 @@ class Post < Sequel::Model
 		TwtxtUpdate.new(text, :date => date)
 	end
 
+	def to_json_feed
+		{
+			:id => post_id,
+			:context_text => post_text,
+			:url => "http://twtxt.xyz#{post_url}"
+		}
+	end
+
 	def html(options = nil)
 		TwtxtUpdate.to_html(self.text, options)
 	end
