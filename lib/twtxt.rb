@@ -51,7 +51,9 @@ class TwtxtUpdate
 		# find the user links. Remove those from the urls collection
 		user_link = /@&lt;([a-z0-9_]+)? (http.+?)&gt;/i
 		at_user = /(\W|^)@([a-z0-9_]+?)(\W|$)/i
-		hash_tag = /(\W|^)#([a-z0-9_]+?)(\W|$)/i
+		hash_tag = /(\W|^|[^&])#([a-z0-9_]+?)(\W|$)/i
+
+		h.gsub! '&#', '&hash;'
 
 		while h =~ hash_tag
 			match = h.match(hash_tag)
@@ -60,6 +62,7 @@ class TwtxtUpdate
 		end
 
 		h.gsub! '&hashtag;', '#'
+		h.gsub! '&hash;', '&#'
 
 		while h =~ at_user
 			match = h.match(at_user)
