@@ -3,6 +3,8 @@
 		twtxt.xyz / all
 	<% elsif timeline_type == :replies  %>
 		twtxt.xyz / <%= target_user %> / replies
+	<% elsif timeline_type == :tag  %>
+		twtxt.xyz / #<%= target_user=%>
 	<% elsif timeline_type == :single_post  %>
 		twtxt.xyz / <%= target_user %> / <%= posts.first.created_date %>
 	<% end %>
@@ -17,6 +19,8 @@
 
 	<% if timeline_type == :all %>
 		showing updates from all users
+	<% elsif timeline_type == :tag %>
+		showing posts tagged #<%= target_user %>
 	<% elsif timeline_type == :replies %>
 		showing replies to <%== html_user_link target_user %>
 	<% elsif timeline_type == :single_post  %>

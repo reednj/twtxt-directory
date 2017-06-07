@@ -51,6 +51,15 @@ class TwtxtUpdate
 		# find the user links. Remove those from the urls collection
 		user_link = /@&lt;([a-z0-9_]+)? (http.+?)&gt;/i
 		at_user = /(\W|^)@([a-z0-9_]+?)(\W|$)/i
+		hash_tag = /(\W|^)#([a-z0-9_]+?)(\W|$)/i
+
+		while h =~ hash_tag
+			match = h.match(hash_tag)
+			name = match.captures[1]
+			h.sub! "\##{name}", "<a class='auto-link' href='/timeline/tag/#{name}'>&hashtag;#{name}</a>"
+		end
+
+		h.gsub! '&hashtag;', '#'
 
 		while h =~ at_user
 			match = h.match(at_user)

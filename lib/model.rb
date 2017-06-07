@@ -176,6 +176,10 @@ class Post < Sequel::Model
 	end
 
 	dataset_module do
+		def containing(text)
+			where(Sequel.like(:post_text, "%#{text}%"))
+		end
+		
 		def exist?(id)
 			!self[id].nil?
 		end

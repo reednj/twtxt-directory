@@ -321,6 +321,17 @@ post '/profile/update' do
 	redirect to('/')
 end
 
+get '/timeline/tag/:tag' do |tag|
+	posts = Post.containing("\##{tag}").limit(256).all
+
+	erb :timeline, :layout => :_layout, :locals => {
+		:post_count => posts.length,
+		:posts => posts,
+		:target_user => tag,
+		:timeline_type => :tag
+	}
+end
+
 get '/user/at/:username_or_id' do |username_or_id|
 	username_hint = params[:n]
 
