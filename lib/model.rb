@@ -14,13 +14,11 @@ class Sequel::Model
 end
 
 class User < Sequel::Model
+	plugin :json_columns
+	json_column :feed_attr
+
 	one_to_many :posts do |ds|
 		ds.reverse_order(:post_date).limit(256)
-	end
-
-	def before_save
-		super
-		self.feed_attr_raw = feed_attr.to_json
 	end
 
 	dataset_module do
@@ -144,35 +142,6 @@ class User < Sequel::Model
 	def db_update_count
 		Post.where(:user_id => user_id).count
 	end
-
-	def feed_attr_raw
-		values[:feed_attr]
-	end
-
-	def feed_attr_raw=(v)
-		modified! :feed_attr
-		@feed_attr = nil
-		values[:feed_attr] = v
-	end
-
-	def feed_attr=(v)
-		self.feed_attr_raw = v.to_json
-	end
-
-	def feed_attr
-		modified! :feed_attr
-
-		if @feed_attr.nil?
-			begin
-				@feed_attr = JSON.parse(feed_attr_raw || '{}', :symbolize_names => true)
-			rescue
-				@feed_attr = {}
-			end
-		end
-
-		return @feed_attr
-	end
-
 end
 
 class Post < Sequel::Model

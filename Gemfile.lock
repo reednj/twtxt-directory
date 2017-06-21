@@ -50,6 +50,8 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     sequel (4.42.1)
+    sequel-json_columns (1.0.2)
+      sequel
     simple_oauth (0.3.1)
     sinatra (1.4.7)
       rack (~> 1.5)
@@ -90,6 +92,7 @@ DEPENDENCIES
   mysql2
   rest-client
   sequel
+  sequel-json_columns
   sinatra
   sinatra-contrib
   sinatra-error_log!

@@ -7,6 +7,7 @@ end
 gem 'sinatra'
 gem 'mysql2'
 gem 'sequel'
+gem 'sequel-json_columns'
 gem 'sinatra-contrib'
 gem 'rest-client'
 gem 'erubis'
